@@ -12,7 +12,9 @@ enum class TrafficLightState {
     RED,        ///< Traffic light is red.
     YELLOW,     ///< Traffic light is yellow.
     GREEN,      ///< Traffic light is green.
-    UNKNOWN     ///< Traffic light is in an unknown state, flashing yellow to indicate malfunction.
+    UNKNOWN,     ///< Traffic light is in an unknown state, flashing yellow to indicate malfunction.
+    WALK,       ///< Pedestrian walk signal.
+    DONT_WALK   ///< Pedestrian don't walk signal.
 };
 
 #endif //TRAFFICLIGHTSTATE_H

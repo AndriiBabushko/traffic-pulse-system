@@ -7,24 +7,21 @@
 
 #include <string>
 
-namespace Pulse {
-    class PulseVehicle
-    {
-    private:
-        std::string id;
-        double speed;
-    public:
-        explicit PulseVehicle(const std::string& vehicle_id);
+class PulseVehicle
+{
+private:
+    std::string id;
+    double speed;
+public:
+    explicit PulseVehicle(const std::string& vehicle_id);
 
-        [[nodiscard]] std::string getId() const;
+    [[nodiscard]] std::string getId() const;
 
-        [[nodiscard]] double getSpeed() const;
+    [[nodiscard]] double getSpeed() const;
 
-        [[nodiscard]] std::pair<double, double> getPosition() const;
+    [[nodiscard]] std::pair<double, double> getPosition() const;
 
-        void update();
-    };
-
-}
+    void update();
+};
 
 #endif //PULSEVEHICLE_H

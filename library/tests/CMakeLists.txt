@@ -1,6 +1,6 @@
-add_executable(library_tests hello_test1.cpp)
+add_executable(library_tests IntersectionStatistics_test.cpp PulseDataManager_test.cpp PulseEntityFactory_test.cpp)
 
-target_link_libraries(library_tests PRIVATE gtest_main)
+target_link_libraries(library_tests PRIVATE traffic_pulse_library gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(library_tests)

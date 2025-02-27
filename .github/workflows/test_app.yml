@@ -1,0 +1,25 @@
+name: App Tests
+
+on:
+  push:
+    branches:
+      - main
+      - library
+      - simulation
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - library
+      - simulation
+
+jobs:
+  test_root:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y cmake g++
+      - name: Run tests
+        run: make test_all

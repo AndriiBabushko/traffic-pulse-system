@@ -7,70 +7,87 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
+#include "core/IntersectionStatistics.h"
+
+#include "entities/PulseEntity.h"
 #include "entities/PulseTrafficLight.h"
 #include "entities/PulseVehicle.h"
-#include <types/AverageWaitingTimes.h>
+
 #include "types/PulsePosition.h"
 
-namespace Pulse {
+/**
+ * @class PulseIntersection
+ * @brief Represents a traffic intersection, managing traffic lights, vehicles, and statistics.
+ */
+class PulseIntersection : public PulseEntity
+{
+public:
     /**
-     * @brief Class representing an intersection in the simulation.
-     * It manages multiple traffic lights and notifies observers of state changes.
+     * @brief Constructs an intersection with a given ID and position.
+     * @param intersection_id Unique identifier for this intersection.
+     * @param position The (x, y) coordinates of this intersection.
      */
-    class PulseIntersection {
-    private:
-        std::string id;                                           ///< Unique ID for the intersection.
-        std::vector<PulseTrafficLight*> traffic_lights;           ///< List of traffic lights at this intersection.
-        PulseVehicle vehicles;                                    ///< Current vehicles at the intersection.
-        PulsePosition position;                                   ///< Position of the intersection.
-        AverageWaitingTimes average_waiting_times;                ///< Average waiting times for vehicles and pedestrians.
+    PulseIntersection(int intersection_id, const PulsePosition& position);
 
-    public:
-        /**
-         * @brief Constructor to initialize the intersection.
-         * @param intersection_id Unique identifier for the intersection.
-         * @param position Position of the intersection.
-         */
-        explicit PulseIntersection(const std::string& intersection_id, const PulsePosition &position);
+    /**
+     * @brief Retrieves the intersection ID.
+     * @return The unique identifier of the intersection.
+     */
+    [[nodiscard]] int getId() const;
 
-        /**
-         * @brief Add a traffic light to the intersection.
-         * @param light Pointer to a PulseTrafficLight object.
-         */
-        void addTrafficLight(PulseTrafficLight* light);
+    /**
+     * @brief Retrieves the position of the intersection.
+     * @return The (x, y) coordinates of the intersection.
+     */
+    [[nodiscard]] PulsePosition getPosition() const;
 
-        /**
-         * @brief Get the current vehicle count.
-         * @return Vehicle count as an integer.
-         */
-        [[nodiscard]] int getVehicleCount() const;
+    /**
+     * @brief Adds a traffic light to this intersection.
+     * @param traffic_light A unique pointer to a PulseTrafficLight object.
+     */
+    void addTrafficLight(std::unique_ptr<PulseTrafficLight> traffic_light);
 
-        /**
-         * @brief Update the average waiting time for vehicles and pedestrians.
-         * @param vehicles_time Average waiting time for vehicles in seconds.
-         * @param pedestrians_time Average waiting time for pedestrians in seconds.
-         */
-        void updateAverageWT(double vehicles_time, double pedestrians_time);
+    /**
+     * @brief Retrieves a list of all traffic lights at this intersection.
+     * @return A vector of raw pointers to PulseTrafficLight objects.
+     */
+    [[nodiscard]] std::vector<PulseTrafficLight*> getTrafficLights() const;
 
-        /**
-         * @brief Get the average waiting time for vehicles.
-         * @return Average waiting time in seconds for vehicles and pedestrians.
-         */
-        [[nodiscard]] double getAverageWT() const;
+    /**
+     * @brief Registers a vehicle as entering the intersection.
+     * @param vehicle A unique pointer to a PulseVehicle object.
+     */
+    void addVehicle(std::unique_ptr<PulseVehicle> vehicle);
 
-        /**
-         * @brief Retrieve intersection ID.
-         * @return Intersection ID as string.
-         */
-        [[nodiscard]] std::string getId() const;
+    /**
+     * @brief Removes a vehicle from the intersection (after it leaves).
+     * @param vehicle_id The unique identifier of the vehicle.
+     */
+    void removeVehicle(const std::string& vehicle_id);
 
-        /**
-         * @brief Retrieve the position of the intersection.
-         * @return A pair of X and Y coordinates.
-         */
-        [[nodiscard]] std::pair<double, double> getPosition() const;
-    };
-}
+    /**
+     * @brief Retrieves a list of all vehicles currently in the intersection.
+     * @return A vector of raw pointers to PulseVehicle objects.
+     */
+    [[nodiscard]] std::vector<PulseVehicle*> getVehicles() const;
+
+    /**
+     * @brief Retrieves statistics for this intersection.
+     * @return A reference to the IntersectionStatistics object.
+     */
+    IntersectionStatistics& getStatistics();
+
+private:
+    int m_intersection_id; ///< Unique identifier for the intersection.
+    PulsePosition m_position; ///< The (x, y) coordinates of the intersection.
+
+    std::vector<std::unique_ptr<PulseTrafficLight>> m_traffic_lights; ///< Traffic lights at this intersection.
+    std::vector<std::unique_ptr<PulseVehicle>> m_vehicles; ///< Vehicles currently in the intersection.
+
+    IntersectionStatistics m_statistics; ///< Stores traffic data for this intersection.
+};
+
 
 #endif // PULSE_INTERSECTION_H

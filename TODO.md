@@ -27,7 +27,7 @@ Requirements:
 Tasks:
 
 - [X] Setup CTest and GoogleTest
-- [ ] Describe header files, classes, etc
+- [ ] Setup SUMO simulation and describe header files, classes, etc
 - [ ] Prepare scripts to run, build and debug
 
 ### Implementation
