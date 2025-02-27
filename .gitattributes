@@ -1,1 +1,4 @@
 sumo/ filter=lfs diff=lfs merge=lfs -text
+sumo/**/*.xml filter=lfs diff=lfs merge=lfs -text
+sumo/**/*.gz filter=lfs diff=lfs merge=lfs -text
+sumo/**/*.rou.xml filter=lfs diff=lfs merge=lfs -text
