@@ -1,0 +1,17 @@
+@startuml
+actor "Адміністратор" as Admin
+
+usecase "Управління користувачами" as А1
+usecase "Управління безпекою" as Security
+
+Admin --> А1
+
+А1 --> Security : «include»
+
+note right of Security
+  Перевірка прав доступу,
+  налаштування шифрування,
+  аудит підозрілих дій
+end note
+
+@enduml

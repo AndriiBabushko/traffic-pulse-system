@@ -1,0 +1,19 @@
+@startuml
+actor "Оператор" as Operator
+
+usecase "Керування світлофорами" as O2
+usecase "Автоматичне налаштування світлофорів" as AutoAdjust
+usecase "Пріоритет екстрених служб" as Priority
+
+Operator --> O2
+
+O2 <|-- AutoAdjust
+O2 <|-- Priority
+
+note top of O2
+  "Керування світлофорами(O2)" = базовий
+  прецедент керування
+  світлофорами
+end note
+
+@enduml

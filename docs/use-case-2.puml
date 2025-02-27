@@ -1,0 +1,17 @@
+@startuml
+actor "Оператор" as Operator
+
+usecase "Моніторинг трафіку в реальному часі" as O1
+usecase "Ручне втручання диспетчера" as ManualOverride
+
+Operator --> O1
+
+O1 <|-- ManualOverride : «extend»
+
+note top of ManualOverride
+  Використовується, якщо
+  диспетчер вважає за потрібне
+  змінити сигнали вручну
+end note
+
+@enduml

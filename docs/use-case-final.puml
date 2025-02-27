@@ -1,0 +1,50 @@
+@startuml
+left to right direction
+
+actor "Оператор" as Operator
+actor "Адміністратор" as Admin
+actor "Зовнішні сенсори / Контролери" as SensorsAndControllers
+actor "Зовнішні системи" as ExternalSystem
+
+rectangle "Система керування світлофорами" {
+    usecase "Моніторинг трафіку в реальному часі" as O1
+    usecase "Ручне втручання диспетчера" as ManualOverride
+
+    O1 <|-- ManualOverride : «extend»
+
+    usecase "Керування світлофорами" as O2
+
+    usecase "Автоматичне налаштування світлофорів" as AutoAdjust
+    usecase "Пріоритет екстрених служб" as Priority
+
+    O2 <|-- AutoAdjust
+    O2 <|-- Priority
+
+    usecase "Управління користувачами" as A1
+    usecase "Управління безпекою" as Security
+
+    A1 --> Security : «include»
+
+    usecase "Налаштування конфігурацій та оновлення" as A2
+
+    usecase "Збір і обробка даних від сенсорів" as SC1
+    usecase "Адаптивне та автоматичне керування" as SCES1
+    usecase "Аналітика і звітування" as OA1
+    usecase "Інтеграція з зовнішніми системами" as ES1
+}
+
+Operator --> O1
+Operator --> O2
+Operator --> OA1
+
+Admin --> A1
+Admin --> A2
+Admin --> OA1
+
+SensorsAndControllers --> SC1
+SC1 --> SCES1
+
+ExternalSystem --> ES1
+ES1 --> SCES1
+
+@enduml
