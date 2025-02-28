@@ -1,0 +1,18 @@
+stages:
+  - test
+
+variables:
+  GIT_STRATEGY: clone
+
+test_root:
+  stage: test
+  image: ubuntu:latest
+  before_script:
+    - apt update && apt install -y cmake g++
+  script:
+    - make test_all
+  only:
+    - main
+    - library
+    - simulation
+    - merge_requests
