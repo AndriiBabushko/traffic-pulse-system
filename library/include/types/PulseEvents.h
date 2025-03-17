@@ -5,6 +5,8 @@
 #ifndef PULSEEVENTS_H
 #define PULSEEVENTS_H
 
+#pragma once
+
 /**
  * @brief Enum to represent different types of events that can occur during the simulation.
  */

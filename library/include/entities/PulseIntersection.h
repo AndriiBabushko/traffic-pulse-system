@@ -5,21 +5,22 @@
 #ifndef PULSE_INTERSECTION_H
 #define PULSE_INTERSECTION_H
 
-#include <vector>
+#pragma once
+
 #include <string>
-#include <memory>
+#include <unordered_map>
 
 #include "core/IntersectionStatistics.h"
 
 #include "entities/PulseEntity.h"
 #include "entities/PulseTrafficLight.h"
-#include "entities/PulseVehicle.h"
+#include "entities/PulseRoadConnection.h"
 
 #include "types/PulsePosition.h"
 
 /**
  * @class PulseIntersection
- * @brief Represents a traffic intersection, managing traffic lights, vehicles, and statistics.
+ * @brief Represents a traffic intersection in a graph-based model.
  */
 class PulseIntersection : public PulseEntity
 {
@@ -29,49 +30,34 @@ public:
      * @param intersection_id Unique identifier for this intersection.
      * @param position The (x, y) coordinates of this intersection.
      */
-    PulseIntersection(int intersection_id, const PulsePosition& position);
+    PulseIntersection(const std::string &intersection_id, const PulsePosition &position);
 
     /**
-     * @brief Retrieves the intersection ID.
-     * @return The unique identifier of the intersection.
+     * @brief Retrieves the intersection ID as int.
+     * @return The unique identifier of the intersection as a string.
      */
-    [[nodiscard]] int getId() const;
+    [[nodiscard]] std::string getId() const override;
 
     /**
      * @brief Retrieves the position of the intersection.
      * @return The (x, y) coordinates of the intersection.
      */
-    [[nodiscard]] PulsePosition getPosition() const;
+    PulsePosition getPosition() const;
 
     /**
-     * @brief Adds a traffic light to this intersection.
-     * @param traffic_light A unique pointer to a PulseTrafficLight object.
+     * @brief Adds a road connection between this intersection and another.
+     * @param road_id Unique identifier for the road connection.
+     * @param intersection The intersection at the other end of the road.
+     * @param traffic_light The traffic light controlling the road.
+     * @param distance The distance in meters between the intersections.
      */
-    void addTrafficLight(std::unique_ptr<PulseTrafficLight> traffic_light);
+    void addRoadConnection(int road_id, PulseIntersection* intersection, PulseTrafficLight* traffic_light, double distance);
 
     /**
-     * @brief Retrieves a list of all traffic lights at this intersection.
-     * @return A vector of raw pointers to PulseTrafficLight objects.
+     * @brief Retrieves all road connections from this intersection.
+     * @return A map of road ID to RoadConnection.
      */
-    [[nodiscard]] std::vector<PulseTrafficLight*> getTrafficLights() const;
-
-    /**
-     * @brief Registers a vehicle as entering the intersection.
-     * @param vehicle A unique pointer to a PulseVehicle object.
-     */
-    void addVehicle(std::unique_ptr<PulseVehicle> vehicle);
-
-    /**
-     * @brief Removes a vehicle from the intersection (after it leaves).
-     * @param vehicle_id The unique identifier of the vehicle.
-     */
-    void removeVehicle(const std::string& vehicle_id);
-
-    /**
-     * @brief Retrieves a list of all vehicles currently in the intersection.
-     * @return A vector of raw pointers to PulseVehicle objects.
-     */
-    [[nodiscard]] std::vector<PulseVehicle*> getVehicles() const;
+    const std::unordered_map<int, PulseRoadConnection>& getConnectedRoads() const;
 
     /**
      * @brief Retrieves statistics for this intersection.
@@ -80,11 +66,9 @@ public:
     IntersectionStatistics& getStatistics();
 
 private:
-    int m_intersection_id; ///< Unique identifier for the intersection.
+    std::string m_intersection_id; ///< Unique identifier for the intersection.
     PulsePosition m_position; ///< The (x, y) coordinates of the intersection.
-
-    std::vector<std::unique_ptr<PulseTrafficLight>> m_traffic_lights; ///< Traffic lights at this intersection.
-    std::vector<std::unique_ptr<PulseVehicle>> m_vehicles; ///< Vehicles currently in the intersection.
+    std::unordered_map<int, PulseRoadConnection> m_connected_roads; ///< Graph-based road connections.
 
     IntersectionStatistics m_statistics; ///< Stores traffic data for this intersection.
 };

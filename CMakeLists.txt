@@ -3,6 +3,9 @@ project(traffic_simulation)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(SUMO_CONFIG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/library/sumo/zhytomyr/2025-01-28-19-55-28/osm.sumocfg")
+
+add_compile_definitions(SUMO_CONFIG_PATH="${SUMO_CONFIG_PATH}")
 
 include(FetchContent)
 FetchContent_Declare(

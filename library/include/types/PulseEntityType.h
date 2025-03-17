@@ -5,6 +5,8 @@
 #ifndef PULSEENTITYTYPE_H
 #define PULSEENTITYTYPE_H
 
+#pragma once
+
 /**
  * @enum PulseEntityType
  * @brief Defines the types of entities that can be created by the factory.

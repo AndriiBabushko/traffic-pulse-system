@@ -7,7 +7,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/config/sumo)
+
+# Copy entire "config/sumo/" directory structure to the build directory
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/config/sumo ${CMAKE_BINARY_DIR}/config/sumo
+)
+
 file(GLOB_RECURSE LIBRARY_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+
+add_definitions(-DCMAKE_BINARY_DIR="${CMAKE_BINARY_DIR}")
 
 add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES})
 
@@ -15,6 +24,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
+
+find_library(LIBSUMOCPP sumocpp HINTS /usr/lib /usr/local/lib)
+if(NOT LIBSUMOCPP)
+    message(FATAL_ERROR "libsumocpp not found! Please install SUMO with libsumo-cpp support.")
+endif()
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBSUMOCPP})
 
 include(FetchContent)
 FetchContent_Declare(

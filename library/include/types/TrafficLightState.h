@@ -5,6 +5,8 @@
 #ifndef TRAFFICLIGHTSTATE_H
 #define TRAFFICLIGHTSTATE_H
 
+#pragma once
+
 /**
  * @brief Enum representing the state of the traffic light.
  */

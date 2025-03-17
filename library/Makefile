@@ -2,8 +2,9 @@ VERSION  ?= 1.0.0
 USER     ?= root
 CHANNEL  ?= stable
 REMOTE   ?= myserver
+LIBRARY_BUILD_DIR = build
 
-.PHONY: help build package create publish clean
+.PHONY: help build package create publish test clean
 
 help:
 	@echo "Makefile for building, packaging, and publishing the library"
@@ -40,6 +41,12 @@ publish: create
 	conan remote login myserver admin -p admin
 	conan upload traffic-pulse-library/$(VERSION)@$(USER)/$(CHANNEL) -r=$(REMOTE)
 	@echo "Library version $(VERSION) has been uploaded to '$(REMOTE) as $(USER)/$(CHANNEL)'!"
+
+test:
+	rm -rf $(LIBRARY_BUILD_DIR)
+	make build
+	cd $(LIBRARY_BUILD_DIR) && ctest --output-on-failure
+	cd ..
 
 clean:
 	@echo "Removing the build directory..."

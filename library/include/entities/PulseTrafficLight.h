@@ -5,53 +5,62 @@
 #ifndef PULSE_TRAFFIC_LIGHT_H
 #define PULSE_TRAFFIC_LIGHT_H
 
+#pragma once
+
 #include <string>
+
+#include "entities/PulseEntity.h"
 #include "types/TrafficLightState.h"
 #include "types/TrafficLightDurations.h"
-#include "types/PulsePosition.h"
 
 /**
- * @brief Class representing an individual traffic light within the simulation.
+ * @class PulseTrafficLight
+ * @brief Represents a traffic light in the simulation.
  */
-class PulseTrafficLight {
-private:
-    int id;                                 ///< Unique ID for the traffic light.
-    TrafficLightState state;            ///< Current state of the traffic light.
-    TrafficLightDurations durations;    ///< Durations for red, yellow, and green lights.
-    PulsePosition position;             ///< Position of the traffic light.
-
+class PulseTrafficLight : public PulseEntity
+{
 public:
     /**
-     * @brief Constructor to initialize a traffic light.
-     * @param lightId Unique identifier for the traffic light.
-     * @param position Position of the traffic light.
+     * @brief Constructs a traffic light with a unique ID and optional durations.
+     * @param traffic_light_id Unique string identifier for the traffic light.
+     * @param durations Custom durations for each light state.
      */
-    explicit PulseTrafficLight(const std::string& lightId, const PulsePosition& position = {0.0, 0.0});
+    explicit PulseTrafficLight(const std::string& traffic_light_id, const TrafficLightDurations& durations = {});
 
     /**
-     * @brief Update the current state of the traffic light.
-     * @param state The new state to be set.
+     * @brief Retrieves the traffic light ID.
+     * @return The unique string identifier.
      */
-    void updateState(TrafficLightState state);
+    [[nodiscard]] std::string getId() const;
 
     /**
-     * @brief Retrieve the current state of the traffic light.
-     * @return Current state.
+     * @brief Sets the current state of the traffic light.
+     * @param state The new state (RED, GREEN, etc.).
+     */
+    void setState(TrafficLightState state);
+
+    /**
+     * @brief Retrieves the current state of the traffic light.
+     * @return The current state.
      */
     [[nodiscard]] TrafficLightState getState() const;
 
     /**
-     * @brief Retrieve the ID of the traffic light.
-     * @return ID as string.
+     * @brief Sets the duration for each state.
+     * @param durations The new durations.
      */
-    [[nodiscard]] int getId() const;
+    void setDurations(const TrafficLightDurations& durations);
 
     /**
-     * @brief Retrieve the position of the traffic light.
-     * @return A pair of X and Y coordinates.
+     * @brief Gets the current state durations.
+     * @return The TrafficLightDurations struct.
      */
-    [[nodiscard]] std::pair<double, double> getPosition() const;
-};
+    [[nodiscard]] TrafficLightDurations getDurations() const;
 
+private:
+    std::string m_traffic_light_id; ///< Unique identifier.
+    TrafficLightState m_current_state; ///< Current state.
+    TrafficLightDurations m_durations; ///< Durations for each state.
+};
 
 #endif // PULSE_TRAFFIC_LIGHT_H

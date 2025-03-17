@@ -4,10 +4,12 @@
 
 #include "entities/PulseIntersection.h"
 
-PulseIntersection::PulseIntersection(int intersection_id, const PulsePosition& position)
+#include <stdexcept>
+
+PulseIntersection::PulseIntersection(const std::string &intersection_id, const PulsePosition &position)
     : m_intersection_id(intersection_id), m_position(position), m_statistics(intersection_id) {}
 
-int PulseIntersection::getId() const
+std::string PulseIntersection::getId() const
 {
     return m_intersection_id;
 }
@@ -17,45 +19,24 @@ PulsePosition PulseIntersection::getPosition() const
     return m_position;
 }
 
-void PulseIntersection::addTrafficLight(std::unique_ptr<PulseTrafficLight> traffic_light)
+void PulseIntersection::addRoadConnection(int road_id, PulseIntersection* intersection, PulseTrafficLight* traffic_light, double distance)
 {
-    m_traffic_lights.push_back(std::move(traffic_light));
-}
-
-std::vector<PulseTrafficLight*> PulseIntersection::getTrafficLights() const
-{
-    std::vector<PulseTrafficLight*> lights;
-    for (const auto& light : m_traffic_lights)
+    if (!intersection || !traffic_light)
     {
-        lights.push_back(light.get());
+        throw std::invalid_argument("Invalid intersection or traffic light reference.");
     }
-    return lights;
-}
 
-void PulseIntersection::addVehicle(std::unique_ptr<PulseVehicle> vehicle)
-{
-    m_vehicles.push_back(std::move(vehicle));
-}
-
-void PulseIntersection::removeVehicle(const std::string& vehicle_id)
-{
-    m_vehicles.erase(
-        std::remove_if(m_vehicles.begin(), m_vehicles.end(),
-            [&vehicle_id](const std::unique_ptr<PulseVehicle>& vehicle)
-            {
-                return vehicle->getId() == vehicle_id;
-            }),
-        m_vehicles.end());
-}
-
-std::vector<PulseVehicle*> PulseIntersection::getVehicles() const
-{
-    std::vector<PulseVehicle*> vehicles;
-    for (const auto& vehicle : m_vehicles)
+    if (m_connected_roads.find(road_id) != m_connected_roads.end())
     {
-        vehicles.push_back(vehicle.get());
+        throw std::runtime_error("Road connection with this ID already exists.");
     }
-    return vehicles;
+
+    m_connected_roads.emplace(road_id, PulseRoadConnection(*intersection, *traffic_light, distance));
+}
+
+const std::unordered_map<int, PulseRoadConnection>& PulseIntersection::getConnectedRoads() const
+{
+    return m_connected_roads;
 }
 
 IntersectionStatistics& PulseIntersection::getStatistics()

@@ -5,25 +5,25 @@
 #ifndef PULSEENTITYFACTORY_H
 #define PULSEENTITYFACTORY_H
 
+#pragma once
+
 #include <memory>
 
-#include <types/PulseVehicleRole.h>
-#include <types/PulseVehicleType.h>
-#include <types/PulseEntityType.h>
-
-#include "entities/PulseIntersection.h"
-#include "entities/PulseTrafficLight.h"
+#include "entities/PulseEntity.h"
 #include "entities/PulseVehicle.h"
+
+#include "types/PulsePosition.h"
+#include "types/PulseEntityType.h"
 
 /**
  * @class PulseEntityFactory
- * @brief Abstract factory for creating PulseEntities dynamically.
+ * @brief Factory class for creating PulseIntersection, PulseTrafficLight, and PulseVehicle objects.
  */
 class PulseEntityFactory
 {
 public:
     /**
-     * @brief Creates an entity based on the requested type.
+     * @brief Creates an entity dynamically based on the requested type.
      * @param type The type of entity to create.
      * @param id The unique identifier of the entity.
      * @param position (Optional) The position for intersections.
@@ -34,10 +34,11 @@ public:
     static std::unique_ptr<PulseEntity> createEntity(
         PulseEntityType type,
         const std::string& id,
-        const PulsePosition& position = {0.0, 0.0},
+        const PulsePosition& position = {},
         PulseVehicleType vehicle_type = PulseVehicleType::CAR,
         PulseVehicleRole vehicle_role = PulseVehicleRole::NORMAL
     );
 };
+
 
 #endif //PULSEENTITYFACTORY_H

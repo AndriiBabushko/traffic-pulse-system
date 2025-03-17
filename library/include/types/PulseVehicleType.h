@@ -5,6 +5,8 @@
 #ifndef PULSEVEHICLETYPE_H
 #define PULSEVEHICLETYPE_H
 
+#pragma once
+
 /**
  * @brief Enum to represent the type of vehicle in the simulation.
  */

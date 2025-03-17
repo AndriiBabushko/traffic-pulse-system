@@ -5,66 +5,72 @@
 #ifndef SUMOINTEGRATION_H
 #define SUMOINTEGRATION_H
 
+#pragma once
+
 #include <string>
-#include <memory>
+#include <vector>
 
 /**
  * @class SumoIntegration
- * @brief Provides a minimal interface to start, stop, and step the SUMO simulation,
- *        plus retrieve relevant simulation data for use with the TrafficPulseLibrary.
+ * @brief Demonstrates using libsumo for starting, stepping, and controlling SUMO from C++.
  */
 class SumoIntegration
 {
 public:
     /**
      * @brief Constructs a SumoIntegration object.
-     * @param sumo_config_file The path to the SUMO configuration file (usually .sumocfg).
-     * @param sumo_binary_path The path to the SUMO binary (e.g. "sumo" or "/usr/bin/sumo").
+     * @param sumo_config The path to a SUMO config file (.sumocfg).
      */
-    SumoIntegration(const std::string& sumo_config_file,
-                    const std::string& sumo_binary_path);
+    explicit SumoIntegration(std::string  sumo_config);
 
     /**
-     * @brief Starts the SUMO simulation in the background (e.g. via TraCI or a child process).
-     *        This is a minimal illustration—replace with a real TraCI client if desired.
+     * @brief Starts the SUMO simulation using libsumo.
      */
     void startSimulation();
 
     /**
      * @brief Steps the simulation forward by one timestep.
-     *        Here we might send a "simulationStep" command via TraCI or
-     *        just rely on a separate child process stepping.
      */
-    void stepSimulation();
+    void stepSimulation() const;
 
     /**
-     * @brief Retrieves the current traffic state from SUMO, e.g. traffic lights or vehicles.
-     *        You might call TraCI methods here in a real scenario.
-     * @return True if successful, false otherwise.
-     */
-    bool fetchSimulationData();
-
-    /**
-     * @brief Stops the SUMO simulation (optional).
+     * @brief Stops the SUMO simulation.
      */
     void stopSimulation();
 
+    /**
+     * @brief Checks if the simulation is running.
+     */
+    [[nodiscard]] virtual bool isRunning() const;
+
+    /**
+     * @brief Retrieves all vehicle IDs.
+     */
+    [[nodiscard]] virtual std::vector<std::string> getAllVehicles() const;
+
+    /**
+     * @brief Retrieves the (x,y) position of a given vehicle by ID.
+     */
+    [[nodiscard]] virtual std::pair<double, double> getVehiclePosition(const std::string& vehicle_id) const;
+
+    /**
+     * @brief Retrieves a list of traffic light IDs.
+     */
+    [[nodiscard]] virtual std::vector<std::string> getAllTrafficLights() const;
+
+    /**
+     * @brief Retrieves a traffic light's state as a string (e.g., "rGrG").
+     */
+    [[nodiscard]] virtual std::string getTrafficLightState(const std::string& tl_id) const;
+
+    /**
+     * @brief Sets the state (e.g., "rGrG") of the specified traffic light.
+     */
+    void setTrafficLightState(const std::string& tl_id, const std::string& state) const;
+
 private:
-    /**
-     * @brief Path to the SUMO .sumocfg scenario file.
-     */
-    std::string m_sumo_config_file;
-
-    /**
-     * @brief Path to the SUMO binary/executable.
-     */
-    std::string m_sumo_binary_path;
-
-    /**
-     * @brief An example child-process handle or TraCI socket reference.
-     *        In a real system, store your TraCI socket or process ID here.
-     */
-    int m_sumo_process_id;
+    std::string m_sumo_config;
+    bool m_running;
 };
 
 #endif // SUMOINTEGRATION_H

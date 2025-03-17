@@ -3,6 +3,7 @@
 //
 
 #pragma once
+
 #include "types/PulseEntityType.h"
 #include "types/PulseEvents.h"
 #include "types/PulsePosition.h"

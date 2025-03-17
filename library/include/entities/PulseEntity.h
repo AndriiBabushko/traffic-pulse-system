@@ -22,7 +22,7 @@ public:
      * @brief Retrieves the entity's unique ID.
      * @return The unique identifier of the entity.
      */
-    virtual std::string getId() const = 0;
+    [[nodiscard]] virtual std::string getId() const = 0;
 };
 
 #endif //PULSEENTITY_H

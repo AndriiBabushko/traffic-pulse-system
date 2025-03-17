@@ -5,6 +5,8 @@
 #ifndef PULSEPOSITION_H
 #define PULSEPOSITION_H
 
+#pragma once
+
 /**
  * @brief Struct to hold the position of an object in 2D space.
  */

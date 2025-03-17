@@ -5,6 +5,8 @@
 #ifndef PULSEVEHICLEROLE_H
 #define PULSEVEHICLEROLE_H
 
+#pragma once
+
 /**
  * @brief Enum to represent the role of a vehicle in the simulation.
  */
