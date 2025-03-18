@@ -3,6 +3,6 @@
 //
 
 #ifndef SUMO_CONFIG_PATH
-#define SUMO_CONFIG_PATH "zhytomyr/2025-01-28-19-55-28/osm.sumocfg"
+#define SUMO_CONFIG_PATH "zhytomyr/2025-03-18-12-02-10/osm.sumocfg"
 
 #endif //SUMO_CONFIG_PATH

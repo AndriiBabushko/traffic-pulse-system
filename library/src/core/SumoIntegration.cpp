@@ -1,6 +1,7 @@
 //
 // Created by andrii on 3/01/25.
 //
+
 #include <libsumo/libsumo.h>
 #include <iostream>
 #include <stdexcept>
@@ -11,31 +12,34 @@
 
 #include "constants/CMakeBinaryDir.h"
 
-SumoIntegration::SumoIntegration(std::string sumo_config)
+SumoIntegration::SumoIntegration(std::string sumo_config, bool bypassConfigCheck)
     : m_running(false)
 {
-    // Construct absolute path
-    std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
-    std::string expected_path = config_dir + sumo_config;
+    if (!bypassConfigCheck) {
+        // Construct absolute path: assume configuration files are in CMAKE_BINARY_DIR/config/sumo/
+        std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
+        std::string expected_path = config_dir + sumo_config;
 
-    // Verify that "config/sumo/" directory exists before iterating
-    if (!std::filesystem::exists(config_dir)) {
-        throw std::runtime_error(
-            "SUMO config directory not found! Expected at: " + config_dir +
-            "\nEnsure that the directory exists and is copied correctly.\n"
-            "Try running: mkdir -p " + config_dir
-        );
+        std::cout << "[DEBUG] Expected config directory: " << config_dir << std::endl;
+        std::cout << "[DEBUG] Expected config file: " << expected_path << std::endl;
+
+        if (!std::filesystem::exists(config_dir)) {
+            throw std::runtime_error(
+                "SUMO config directory not found! Expected at: " + config_dir +
+                "\nEnsure that the directory exists and is copied correctly."
+            );
+        }
+        if (!std::filesystem::exists(expected_path)) {
+            throw std::runtime_error(
+                "SUMO config file not found! Expected at: " + expected_path +
+                "\nEnsure you have placed the correct file inside 'config/sumo/'."
+            );
+        }
+        m_sumo_config = std::move(expected_path);
+    } else {
+        // Bypass file checks for testing/mocking purposes.
+        m_sumo_config = std::move(sumo_config);
     }
-
-    // Verify that the specific SUMO config file exists
-    if (!std::filesystem::exists(expected_path)) {
-        throw std::runtime_error(
-            "SUMO config file not found! Expected at: " + expected_path +
-            "\nEnsure you have placed the correct file inside 'config/sumo/'."
-        );
-    }
-
-    m_sumo_config = std::move(expected_path);
     std::cout << "[INFO] Using SUMO config file: " << m_sumo_config << std::endl;
 }
 
@@ -46,10 +50,8 @@ void SumoIntegration::startSimulation()
     }
 
     std::cout << "[SumoIntegration] Starting libsumo with config: " << m_sumo_config << std::endl;
-
     libsumo::Simulation::start({"sumo", "-c", m_sumo_config});
     m_running = true;
-
     std::cout << "[SumoIntegration] SUMO simulation started via libsumo." << std::endl;
 }
 
@@ -57,7 +59,6 @@ void SumoIntegration::stepSimulation() const {
     if (!m_running) {
         throw std::runtime_error("Cannot step simulation: SUMO not running.");
     }
-
     libsumo::Simulation::step();
 }
 
@@ -66,54 +67,42 @@ void SumoIntegration::stopSimulation()
     if (!m_running) {
         throw std::runtime_error("Cannot stop simulation: SUMO not running.");
     }
-
     std::cout << "[SumoIntegration] Stopping libsumo simulation..." << std::endl;
-
     libsumo::Simulation::close();
     m_running = false;
-
     std::cout << "[SumoIntegration] SUMO simulation stopped." << std::endl;
 }
 
-bool SumoIntegration::isRunning() const
-{
+bool SumoIntegration::isRunning() const {
     return m_running;
 }
 
-std::vector<std::string> SumoIntegration::getAllVehicles() const
-{
+std::vector<std::string> SumoIntegration::getAllVehicles() const {
     if (!m_running) {
         throw std::runtime_error("Cannot retrieve vehicles: SUMO not running.");
     }
-
     return libsumo::Vehicle::getIDList();
 }
 
-std::pair<double, double> SumoIntegration::getVehiclePosition(const std::string& vehicle_id) const
-{
+std::pair<double, double> SumoIntegration::getVehiclePosition(const std::string& vehicle_id) const {
     if (!m_running) {
         throw std::runtime_error("Cannot retrieve position: SUMO not running.");
     }
-
     auto pos = libsumo::Vehicle::getPosition(vehicle_id);
     return {pos.x, pos.y};
 }
 
-std::vector<std::string> SumoIntegration::getAllTrafficLights() const
-{
+std::vector<std::string> SumoIntegration::getAllTrafficLights() const {
     if (!m_running) {
         throw std::runtime_error("Cannot retrieve traffic lights: SUMO not running.");
     }
-
     return libsumo::TrafficLight::getIDList();
 }
 
-std::string SumoIntegration::getTrafficLightState(const std::string& tl_id) const
-{
+std::string SumoIntegration::getTrafficLightState(const std::string& tl_id) const {
     if (!m_running) {
         throw std::runtime_error("Cannot retrieve traffic light state: SUMO not running.");
     }
-
     return libsumo::TrafficLight::getRedYellowGreenState(tl_id);
 }
 
@@ -121,6 +110,5 @@ void SumoIntegration::setTrafficLightState(const std::string& tl_id, const std::
     if (!m_running) {
         throw std::runtime_error("Cannot set traffic light state: SUMO not running.");
     }
-
     libsumo::TrafficLight::setRedYellowGreenState(tl_id, state);
 }

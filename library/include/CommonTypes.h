@@ -11,3 +11,6 @@
 #include "types/PulseVehicleType.h"
 #include "types/TrafficLightDurations.h"
 #include "types/TrafficLightState.h"
+
+#include "interfaces/IObserver.h"
+#include "interfaces/ISubject.h"

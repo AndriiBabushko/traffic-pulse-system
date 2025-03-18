@@ -14,8 +14,6 @@
 - [X] ( + ) Find a way to test the project
 - [X] ( + ) Find a way to document the project
 - [X] ( + ) Find a way to structure the project
-- [ ] ( ++ ) Identify the best libraries/tools to develop the library
-- [ ] ( ++ ) Identify the best libraries/tools to develop the simulation
 
 ---
 
@@ -33,8 +31,9 @@
 
 **Tasks:**
 - [X] ( + ) Set up CTest and GoogleTest
-- [ ] ( + ) Set up SUMO simulation and describe headers, classes, etc.
-- [ ] ( ++ ) Prepare scripts to run, build, and debug
+- [X] ( + ) Set up SUMO simulation and describe headers, classes, etc.
+- [ ] ( + ) Prepare scripts to run, build, debug and test
+- [ ] ( ++ ) Add a basic example to demonstrate the library usage
 
 ### Implementation
 
@@ -48,7 +47,9 @@
 **Tasks:**
 - [ ] ( + ) Run SUMO simulation and collect some sample data
 - [ ] ( + ) Refactor basic classes and functions to handle simulation data
-- [ ] ( ++ ) Implement Observer | Singleton to notify subscribers of changes
+- [ ] ( + ) Display the simulation data in the console
+- [ ] ( + ) Implement Observer | Singleton to notify subscribers of changes
+- [ ] ( + ) Add tests for the core functionality
 
 ### Testing
 
@@ -86,8 +87,8 @@
 **Tasks:**
 - [ ] ( + ) Add usage examples
 - [ ] ( + ) Add tests
-- [ ] ( ++ ) Publish the library
-- [ ] ( ++ ) Automate the publishing process
+- [ ] ( +++ ) Publish the library
+- [ ] ( +++ ) Automate the publishing process
 
 ---
 
@@ -105,7 +106,7 @@
 **Tasks:**
 - [ ] ( + ) Set up the project structure
 - [ ] ( + ) Set up a database to store traffic data and statistics
-- [ ] ( ++ ) Write basic tests to cover main functionality
+- [ ] ( + ) Write basic tests to cover main functionality
 
 ### Features & Implementation
 
@@ -167,4 +168,4 @@
 **Tasks:**
 - [ ] ( + ) Set up Docker containers for the database and the Traffic Pulse service
 - [ ] ( ++ ) Test cross-platform compatibility (Linux, macOS)
-- [ ] ( ++ ) Configure backups and monitoring for reliable operations  
+- [ ] ( +++ ) Configure backups and monitoring for reliable operations  

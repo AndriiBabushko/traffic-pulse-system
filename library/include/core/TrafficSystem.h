@@ -5,62 +5,72 @@
 #ifndef TRAFFICSYSTEM_H
 #define TRAFFICSYSTEM_H
 
-#pragma once
-
 #include <memory>
+#include <vector>
+#include <string>
 #include "core/PulseDataManager.h"
-#include "core/SumoIntegration.h"
+#include "interfaces/ISubject.h"
 
 /**
- * @class TrafficSystem
- * @brief Controls the overall traffic simulation, handling initialization, SUMO interaction, and updates.
+ * @brief Main system class for traffic pulse.
+ *
+ * This class creates and manages its own modules (SumoIntegration, PulseDataManager, PulseTrafficAlgo)
+ * and runs the simulation loop. It also acts as a Subject to notify observers (e.g. UI or Logger)
+ * about system events.
  */
-class TrafficSystem
-{
+class TrafficSystem : public ISubject {
 public:
     /**
-     * @brief Retrieves the singleton instance of TrafficSystem.
-     * @return Reference to the singleton TrafficSystem.
+     * @brief Constructs a TrafficSystem.
+     * @param updateFrequency The frequency (in seconds) at which the system updates and notifies observers.
      */
-    static TrafficSystem& getInstance();
+    explicit TrafficSystem(double updateFrequency = 5.0);
+
+    ~TrafficSystem() override;
 
     /**
-     * @brief Initializes the traffic simulation using SUMO.
-     * This function starts SUMO and loads intersections, roads, and traffic lights.
+     * @brief Runs the simulation loop.
+     *
+     * The loop will start the simulation, update modules at each step, and notify observers
+     * with events (using the PulseEvents enum). For demonstration, this loop runs for a fixed number of steps.
      */
-    void initialize();
+    void run();
 
     /**
-     * @brief Runs the simulation step.
-     * This function steps SUMO forward and updates traffic lights, vehicles, and statistics.
+     * @brief Attach an observer to receive events.
+     * @param observer Shared pointer to the observer.
      */
-    void stepSimulation();
+    void attach(std::shared_ptr<class IObserver> observer) override;
 
     /**
-     * @brief Stops the traffic simulation.
+     * @brief Detach an observer.
+     * @param observer Shared pointer to the observer.
      */
-    void stopSimulation();
+    void detach(std::shared_ptr<class IObserver> observer) override;
 
     /**
-     * @brief Retrieves the system-wide data manager.
-     * @return Reference to the PulseDataManager.
+     * @brief Notifies all attached observers with an event description.
+     * @param eventDescription The description of the event.
      */
-    PulseDataManager& getDataManager();
+    void notify(const std::string& eventDescription) override;
+
+    /**
+     * @brief Provides access to the data manager.
+     */
+    [[nodiscard]] class PulseDataManager& getDataManager() const;
 
 private:
-    /**
-     * @brief Private constructor for singleton pattern.
-     */
-    TrafficSystem();
+    // Internal modules; created internally.
+    std::unique_ptr<class SumoIntegration> m_sumo;
+    // PulseDataManager is a singleton.
+    class PulseDataManager& m_dataManager;
+    std::unique_ptr<class PulseTrafficAlgo> m_algo;
 
-    /**
-     * @brief Deleted copy constructor and assignment operator.
-     */
-    TrafficSystem(const TrafficSystem&) = delete;
-    TrafficSystem& operator=(const TrafficSystem&) = delete;
+    // Observer list
+    std::vector<std::shared_ptr<class IObserver>> m_observers;
 
-private:
-    std::unique_ptr<SumoIntegration> m_sumoIntegration; ///< SUMO integration handler.
+    // Simulation update frequency (in seconds)
+    double m_updateFrequency;
 };
 
 #endif //TRAFFICSYSTEM_H
