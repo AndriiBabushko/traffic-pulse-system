@@ -1,8 +1,8 @@
-config/sumo/ filter=lfs diff=lfs merge=lfs -text
-config/sumo/**/*.xml filter=lfs diff=lfs merge=lfs -text
-config/sumo/**/*.gz filter=lfs diff=lfs merge=lfs -text
-config/sumo/**/*.rou.xml filter=lfs diff=lfs merge=lfs -text
-library/config/sumo/ filter=lfs diff=lfs merge=lfs -text
-library/config/sumo/**/*.xml filter=lfs diff=lfs merge=lfs -text
-library/config/sumo/**/*.gz filter=lfs diff=lfs merge=lfs -text
-library/config/sumo/**/*.rou.xml filter=lfs diff=lfs merge=lfs -text
+config/sumo/simulations/ filter=lfs diff=lfs merge=lfs -text
+config/sumo/simulations/**/*.xml filter=lfs diff=lfs merge=lfs -text
+config/sumo/simulations/**/*.gz filter=lfs diff=lfs merge=lfs -text
+config/sumo/simulations/**/*.rou.xml filter=lfs diff=lfs merge=lfs -text
+library/config/sumo/simulations/ filter=lfs diff=lfs merge=lfs -text
+library/config/sumo/simulations/**/*.xml filter=lfs diff=lfs merge=lfs -text
+library/config/sumo/simulations/**/*.gz filter=lfs diff=lfs merge=lfs -text
+library/config/sumo/simulations/**/*.rou.xml filter=lfs diff=lfs merge=lfs -text
