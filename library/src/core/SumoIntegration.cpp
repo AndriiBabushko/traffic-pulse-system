@@ -17,7 +17,12 @@ SumoIntegration::SumoIntegration(std::string sumo_config, bool bypassConfigCheck
 {
     if (!bypassConfigCheck) {
         // Construct absolute path: assume configuration files are in CMAKE_BINARY_DIR/config/sumo/
-        std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
+        #ifdef TEST_PACKAGE_BINARY_DIR
+                std::string config_dir = std::string(TEST_PACKAGE_BINARY_DIR) + "/config/sumo/";
+        #else
+                std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
+        #endif
+
         std::string expected_path = config_dir + sumo_config;
 
         std::cout << "[DEBUG] Expected config directory: " << config_dir << std::endl;
