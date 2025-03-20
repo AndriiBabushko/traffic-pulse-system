@@ -2,21 +2,25 @@
 // Created by andrii on 2/22/25.
 //
 
+#pragma once
+
 #ifndef TRAFFICSYSTEM_H
 #define TRAFFICSYSTEM_H
 
 #include <memory>
 #include <vector>
 #include <string>
-#include "core/PulseDataManager.h"
+#include <atomic>
 #include "interfaces/ISubject.h"
 
 /**
  * @brief Main system class for traffic pulse.
  *
  * This class creates and manages its own modules (SumoIntegration, PulseDataManager, PulseTrafficAlgo)
- * and runs the simulation loop. It also acts as a Subject to notify observers (e.g. UI or Logger)
- * about system events.
+ * and runs the simulation loop. It acts as a Subject so that observers (like a UI or Logger) can be notified
+ * about system events (using, for example, the PulseEvents enum).
+ *
+ * The simulation runs continuously until the user requests a stop.
  */
 class TrafficSystem : public ISubject {
 public:
@@ -29,12 +33,16 @@ public:
     ~TrafficSystem() override;
 
     /**
-     * @brief Runs the simulation loop.
-     *
-     * The loop will start the simulation, update modules at each step, and notify observers
-     * with events (using the PulseEvents enum). For demonstration, this loop runs for a fixed number of steps.
+     * @brief Runs the simulation loop continuously until a stop is requested.
      */
     void run();
+
+    /**
+     * @brief Requests the simulation to stop.
+     *
+     * This method can be called from another thread or context to signal the simulation loop to exit.
+     */
+    void requestStop();
 
     /**
      * @brief Attach an observer to receive events.
@@ -71,6 +79,9 @@ private:
 
     // Simulation update frequency (in seconds)
     double m_updateFrequency;
+
+    // Flag to signal simulation stop.
+    std::atomic<bool> m_stopRequested{false};
 };
 
 #endif //TRAFFICSYSTEM_H

@@ -3,7 +3,9 @@
 //
 #pragma once
 
-#ifndef SUMO_CONFIG_PATH
+#ifndef SUMOCONFIGPATH_H
+#define SUMOCONFIGPATH_H
+
 #define SUMO_CONFIG_PATH "simulations/zhytomyr/2025-03-18-12-02-10/osm.sumocfg"
 
-#endif //SUMO_CONFIG_PATH
+#endif //SUMOCONFIGPATH_H

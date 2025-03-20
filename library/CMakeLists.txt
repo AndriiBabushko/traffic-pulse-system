@@ -17,6 +17,7 @@ file(GLOB_RECURSE LIBRARY_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 add_definitions(-DCMAKE_BINARY_DIR="${CMAKE_BINARY_DIR}")
 
+find_package(PugiXML REQUIRED)
 add_library(${PROJECT_NAME} STATIC ${LIBRARY_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -28,7 +29,7 @@ find_library(LIBSUMOCPP sumocpp HINTS /usr/lib /usr/local/lib)
 if(NOT LIBSUMOCPP)
     message(FATAL_ERROR "libsumocpp not found! Please install SUMO with libsumo-cpp support.")
 endif()
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBSUMOCPP})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBSUMOCPP} pugixml)
 
 include(FetchContent)
 FetchContent_Declare(
