@@ -1,11 +1,26 @@
-image: alpine:latest
-
 stages:
+  - test
   - build
   - deploy
 
+variables:
+  GIT_STRATEGY: clone
+
+test_root:
+  stage: test
+  image: ubuntu:latest
+  before_script:
+    - apt update && apt install -y cmake g++
+  script:
+    - make test_all
+  only:
+    - main
+    - library
+    - app
+
 build-doxygen:
   stage: build
+  image: alpine:latest
   script:
     - apk add --no-cache doxygen graphviz
     - cd library
@@ -14,6 +29,10 @@ build-doxygen:
     paths:
       - library/html/
     expire_in: 1 week
+  only:
+    - main
+    - library
+    - app
 
 pages:
   stage: deploy
