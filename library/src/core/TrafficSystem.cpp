@@ -58,9 +58,9 @@ void TrafficSystem::run() {
         m_sumo->startSimulation();
         notify("Event: SIMULATION_START");
 
-        // Use PulseLoader to load static network data.
-        // Assume we have a constant SUMO_NET_PATH defined, pointing to an uncompressed net file.
-        PulseLoader loader(m_dataManager, SUMO_NET_PATH);
+        std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
+        std::string expected_path = config_dir + SUMO_NET_PATH;
+        PulseLoader loader(m_dataManager, expected_path);
         loader.loadNetworkData();
         notify("Event: LOADING_COMPLETE");
 

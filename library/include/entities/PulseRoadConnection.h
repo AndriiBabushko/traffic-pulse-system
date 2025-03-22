@@ -22,7 +22,7 @@ public:
      * @param traffic_light Reference to the traffic light controlling this road.
      * @param distance Distance in meters between intersections.
      */
-    PulseRoadConnection(PulseIntersection& intersection, PulseTrafficLight& traffic_light, double distance);
+    PulseRoadConnection(PulseIntersection& intersection, PulseTrafficLight* traffic_light, double distance);
 
     /**
      * @brief Retrieves the connected intersection.
@@ -32,9 +32,9 @@ public:
 
     /**
      * @brief Retrieves the traffic light controlling this road.
-     * @return Reference to the traffic light.
+     * @return Pointer to the traffic light.
      */
-    [[nodiscard]] PulseTrafficLight& getTrafficLight() const;
+    [[nodiscard]] PulseTrafficLight* getTrafficLight() const;
 
     /**
      * @brief Retrieves the distance between intersections.
@@ -46,7 +46,7 @@ public:
      * @brief Updates the traffic light assigned to this road connection.
      * @param traffic_light New traffic light.
      */
-    void setTrafficLight(PulseTrafficLight& traffic_light);
+    void setTrafficLight(PulseTrafficLight *traffic_light);
 
     /**
      * @brief Updates the distance between intersections.
@@ -56,7 +56,7 @@ public:
 
 private:
     PulseIntersection& m_connected_intersection; ///< Connected intersection.
-    PulseTrafficLight& m_traffic_light; ///< Traffic light managing the road.
+    PulseTrafficLight* m_traffic_light; ///< Traffic light managing the road.
     double m_distance; ///< Distance in meters.
 };
 
