@@ -2,10 +2,15 @@ name: Build and Publish Doxygen
 
 on:
   push:
-    branches: [ "main" "library" ]
+    branches:
+        - main
+        - library
+        - app
   pull_request:
-    branches: [ "main" "library" ]
-
+    branches:
+        - main
+        - library
+        - app
 jobs:
   build-docs:
     runs-on: ubuntu-latest
