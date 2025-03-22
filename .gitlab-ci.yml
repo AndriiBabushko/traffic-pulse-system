@@ -20,9 +20,9 @@ test_root:
 
 build-doxygen:
   stage: build
-  image: alpine:latest
+  image: ubuntu:latest
   script:
-    - apt add --no-cache doxygen graphviz
+    - apt install -y doxygen graphviz
     - cd library
     - doxygen Doxyfile
   artifacts:
