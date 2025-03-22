@@ -5,13 +5,13 @@ on:
     branches:
       - main
       - library
-      - simulation
+      - app
   workflow_dispatch:
   pull_request:
     branches:
       - main
       - library
-      - simulation
+      - app
 
 jobs:
   test_root:

@@ -19,8 +19,11 @@ class MockSumoIntegration : public SumoIntegration
 public:
     MockSumoIntegration()
         : SumoIntegration(SUMO_CONFIG_PATH)
-    {
-    }
+    {}
+
+    void startSimulation() override {}
+    void stopSimulation() override {}
+    void stepSimulation() const override {}
 
     bool isRunning() const override { return true; }
 

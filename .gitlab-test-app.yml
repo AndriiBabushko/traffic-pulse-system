@@ -14,5 +14,4 @@ test_root:
   only:
     - main
     - library
-    - simulation
-    - merge_requests
+    - app

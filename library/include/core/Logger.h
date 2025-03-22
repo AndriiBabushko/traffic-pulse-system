@@ -2,26 +2,38 @@
 // Created by andrii on 1/30/25.
 //
 
+#pragma once
+
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <fstream>
-#include <string>
+#include <mutex>
+#include <iostream>
+#include "interfaces/IObserver.h"
 
-class Logger {
-private:
-    std::ofstream logFile;
-
+/**
+ * @class Logger
+ * @brief A singleton logger that implements IObserver to log system events.
+ */
+class Logger : public IObserver {
 public:
+    /**
+     * @brief Retrieves the singleton instance of Logger.
+     * @return Reference to the Logger instance.
+     */
     static Logger& getInstance();
 
-    void log(const std::string& message);
-    void logTrafficLight(int id, const std::string& state);
-    void logIntersectionStats(const std::string& intersectionId, int vehicleCount);
+    /**
+     * @brief Logs an event.
+     * @param eventDescription The event description to log.
+     */
+    void update(const std::string& eventDescription) override;
 
-    ~Logger();
 private:
-    Logger(); // Private constructor
+    Logger() = default;
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
 };
+
 
 #endif // LOGGER_H

@@ -2,10 +2,9 @@
 // Created by andrii on 2/22/25.
 //
 
+#pragma once
 #ifndef SUMOINTEGRATION_H
 #define SUMOINTEGRATION_H
-
-#pragma once
 
 #include <string>
 #include <vector>
@@ -13,6 +12,9 @@
 /**
  * @class SumoIntegration
  * @brief Demonstrates using libsumo for starting, stepping, and controlling SUMO from C++.
+ *
+ * The constructor accepts an optional flag to bypass filesystem configuration checks.
+ * This is useful for mocking purposes.
  */
 class SumoIntegration
 {
@@ -20,31 +22,36 @@ public:
     /**
      * @brief Constructs a SumoIntegration object.
      * @param sumo_config The path to a SUMO config file (.sumocfg).
+     * @param bypassConfigCheck If true, bypasses the filesystem configuration checks (for testing/mocking).
      */
-    explicit SumoIntegration(std::string  sumo_config);
+    explicit SumoIntegration(std::string sumo_config, bool bypassConfigCheck = false);
+
+    virtual ~SumoIntegration() = default;
 
     /**
      * @brief Starts the SUMO simulation using libsumo.
      */
-    void startSimulation();
+    virtual void startSimulation();
 
     /**
      * @brief Steps the simulation forward by one timestep.
      */
-    void stepSimulation() const;
+    virtual void stepSimulation() const;
 
     /**
      * @brief Stops the SUMO simulation.
      */
-    void stopSimulation();
+    virtual void stopSimulation();
 
     /**
      * @brief Checks if the simulation is running.
+     * @return True if the simulation is running, false otherwise.
      */
     [[nodiscard]] virtual bool isRunning() const;
 
     /**
      * @brief Retrieves all vehicle IDs.
+     * @return A vector of vehicle IDs.
      */
     [[nodiscard]] virtual std::vector<std::string> getAllVehicles() const;
 
@@ -55,6 +62,7 @@ public:
 
     /**
      * @brief Retrieves a list of traffic light IDs.
+     * @return A vector of traffic light IDs.
      */
     [[nodiscard]] virtual std::vector<std::string> getAllTrafficLights() const;
 
@@ -66,11 +74,11 @@ public:
     /**
      * @brief Sets the state (e.g., "rGrG") of the specified traffic light.
      */
-    void setTrafficLightState(const std::string& tl_id, const std::string& state) const;
+    virtual void setTrafficLightState(const std::string& tl_id, const std::string& state) const;
 
-private:
-    std::string m_sumo_config;
-    bool m_running;
+protected:
+    std::string m_sumo_config; ///< Path to the SUMO configuration file.
+    bool m_running;            ///< Whether the simulation is running.
 };
 
 #endif // SUMOINTEGRATION_H
