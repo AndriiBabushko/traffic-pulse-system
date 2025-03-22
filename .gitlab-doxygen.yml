@@ -1,0 +1,27 @@
+image: alpine:latest
+
+stages:
+  - build
+  - deploy
+
+build-doxygen:
+  stage: build
+  script:
+    - apk add --no-cache doxygen graphviz
+    - cd library
+    - doxygen Doxyfile
+  artifacts:
+    paths:
+      - library/html/
+    expire_in: 1 week
+
+pages:
+  stage: deploy
+  script:
+    - mv library/html public
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week
+  only:
+    - main
