@@ -22,7 +22,7 @@ build-doxygen:
   stage: build
   image: alpine:latest
   script:
-    - apk add --no-cache doxygen graphviz
+    - apt add --no-cache doxygen graphviz
     - cd library
     - doxygen Doxyfile
   artifacts:

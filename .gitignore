@@ -59,4 +59,5 @@ cmake-build-*/
 build/
 CMakeUserPresets.json
 library/html
+builds/
 
