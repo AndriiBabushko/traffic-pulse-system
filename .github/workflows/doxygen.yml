@@ -2,9 +2,9 @@ name: Build and Publish Doxygen
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" "library" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main" "library" ]
 
 jobs:
   build-docs:
