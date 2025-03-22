@@ -22,7 +22,8 @@ build-doxygen:
   stage: build
   image: ubuntu:latest
   script:
-    - apt install -y doxygen graphviz
+    - apt-get update
+    - apt-get install -y doxygen graphviz
     - cd library
     - doxygen Doxyfile
   artifacts:
