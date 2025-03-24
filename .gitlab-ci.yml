@@ -6,6 +6,7 @@ default:
     - apt-get update
     - apt-get install -y cmake g++ git libpugixml-dev git-lfs sumo sumo-tools
     - git lfs install
+    - git lfs pull
 
 stages:
   - test
