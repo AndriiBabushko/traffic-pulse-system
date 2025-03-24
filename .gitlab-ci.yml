@@ -3,8 +3,9 @@ default:
   tags:
     - docker
   before_script:
+    - add-apt-repository ppa:sumo/stable
     - apt-get update
-    - apt-get install -y cmake g++ git libpugixml-dev git-lfs sumo sumo-tools
+    - apt-get install cmake g++ git libpugixml-dev git-lfs
     - git lfs install
     - git lfs pull
 
