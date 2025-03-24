@@ -7,6 +7,11 @@ set(SUMO_CONFIG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/library/sumo/zhytomyr/2025-01-
 
 add_compile_definitions(SUMO_CONFIG_PATH="${SUMO_CONFIG_PATH}")
 
+find_library(LIBSUMOCPP sumocpp HINTS /usr/lib /usr/local/lib)
+if(NOT LIBSUMOCPP)
+    message(FATAL_ERROR "libsumocpp not found! Please install SUMO with libsumo-cpp support.")
+endif()
+
 include(FetchContent)
 FetchContent_Declare(
         googletest
@@ -20,7 +25,7 @@ add_subdirectory(library)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE traffic_pulse_library)
+target_link_libraries(${PROJECT_NAME} PRIVATE traffic_pulse_library ${LIBSUMOCPP} pugixml)
 
 enable_testing()
 

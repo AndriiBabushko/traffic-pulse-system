@@ -3,9 +3,7 @@
 //
 #pragma once
 
-#ifndef SUMONETPATH_H
-#define SUMONETPATH_H
-
+#ifndef SUMO_NET_PATH
 #define SUMO_NET_PATH "simulations/zhytomyr/2025-03-18-12-02-10/osm.net.xml"
 
-#endif //SUMONETPATH_H
+#endif //SUMO_NET_PATH

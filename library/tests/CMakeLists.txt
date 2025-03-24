@@ -3,4 +3,4 @@ add_executable(library_tests SumoIntegration_test.cpp PulseDataManager_test.cpp 
 target_link_libraries(library_tests PRIVATE traffic_pulse_library gtest_main)
 
 include(GoogleTest)
-gtest_discover_tests(library_tests)
+gtest_discover_tests(library_tests PROPERTIES LABELS "library")

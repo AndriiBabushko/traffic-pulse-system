@@ -32,8 +32,12 @@
 **Tasks:**
 - [X] ( + ) Set up CTest and GoogleTest
 - [X] ( + ) Set up SUMO simulation and describe headers, classes, etc.
-- [ ] ( + ) Prepare scripts to run, build, debug and test
-- [ ] ( ++ ) Add a basic example to demonstrate the library usage
+- [ ] ( + ) Prepare scripts to:
+  - [X] ( + ) Run
+  - [X] ( + ) Build
+  - [ ] ( ++ ) Debug 
+  - [X] ( ++ ) Test
+- [X] ( ++ ) Add a basic example to demonstrate the library usage
 
 ### Implementation
 
@@ -45,7 +49,7 @@
 - Data visualization (console)
 
 **Tasks:**
-- [ ] ( + ) Run SUMO simulation and collect some sample data
+- [X] ( + ) Run SUMO simulation and collect some sample data
 - [ ] ( + ) Refactor basic classes and functions to handle simulation data
 - [ ] ( + ) Display the simulation data in the console
 - [ ] ( + ) Implement Observer | Singleton to notify subscribers of changes

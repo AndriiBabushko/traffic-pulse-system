@@ -2,8 +2,8 @@
 add_executable(root_tests hello_test.cpp)
 
 # Link the GoogleTest main library
-target_link_libraries(root_tests PRIVATE gtest_main)
+target_link_libraries(root_tests PRIVATE traffic_pulse_library gtest_main)
 
 # Register the test with CMake
 include(GoogleTest)
-gtest_discover_tests(root_tests)
+gtest_discover_tests(root_tests PROPERTIES LABELS "root")
