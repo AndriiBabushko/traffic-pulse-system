@@ -3,6 +3,7 @@ default:
   tags:
     - docker
   before_script:
+    - apt-get install software-properties-common
     - add-apt-repository ppa:sumo/stable
     - apt-get update
     - apt-get install cmake g++ git libpugixml-dev git-lfs
