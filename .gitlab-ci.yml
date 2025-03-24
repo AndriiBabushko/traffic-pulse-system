@@ -8,6 +8,8 @@ variables:
 
 test_root:
   stage: test
+  tags:
+    - docker
   image: ubuntu:22.04
   before_script:
     - apt update && apt install -y cmake g++ make
@@ -20,6 +22,8 @@ test_root:
 
 build-doxygen:
   stage: build
+  tags:
+    - docker
   image: ubuntu:22.04
   before_script:
     - apt update && apt-get install -y doxygen graphviz
