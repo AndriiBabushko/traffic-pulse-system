@@ -4,7 +4,7 @@ default:
     - docker
   before_script:
     - apt-get update
-    - apt-get install -y cmake g++
+    - apt-get install -y cmake g++ git
     - apt-get install -y sumo sumo-tools
 
 stages:
