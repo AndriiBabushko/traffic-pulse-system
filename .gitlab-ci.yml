@@ -8,9 +8,9 @@ variables:
 
 test_root:
   stage: test
-  image: ubuntu:latest
+  image: ubuntu:22.04
   before_script:
-    - apt update && apt install -y cmake g++
+    - apt update && apt install -y cmake g++ make
   script:
     - make test
   only:
@@ -20,10 +20,10 @@ test_root:
 
 build-doxygen:
   stage: build
-  image: ubuntu:latest
+  image: ubuntu:22.04
+  before_script:
+    - apt update && apt-get install -y doxygen graphviz
   script:
-    - apt-get update
-    - apt-get install -y doxygen graphviz
     - cd library
     - doxygen Doxyfile
   artifacts:

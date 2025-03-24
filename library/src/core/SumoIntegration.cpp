@@ -12,16 +12,13 @@
 
 #include "constants/CMakeBinaryDir.h"
 
-SumoIntegration::SumoIntegration(std::string sumo_config, bool bypassConfigCheck)
+SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypassConfigCheck)
     : m_running(false)
 {
     if (!bypassConfigCheck) {
         std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
 
         std::string expected_path = config_dir + sumo_config;
-
-        // std::cout << "[DEBUG] Expected config directory: " << config_dir << std::endl;
-        // std::cout << "[DEBUG] Expected config file: " << expected_path << std::endl;
 
         if (!std::filesystem::exists(config_dir)) {
             throw std::runtime_error(
