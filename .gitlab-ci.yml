@@ -3,7 +3,7 @@ default:
   tags:
     - docker
   before_script:
-    - apt update && apt install -y cmake g++ make
+    - apt update && apt install -y cmake g++
 
 stages:
   - test
