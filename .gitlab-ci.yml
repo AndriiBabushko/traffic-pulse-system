@@ -41,7 +41,8 @@ test_all:
 build-doxygen:
   stage: build
   before_script:
-    - apt-get update && apt-get install -y doxygen graphviz
+    - apt-get update
+    - apt-get install -y doxygen graphviz
   script:
     - cd library
     - doxygen Doxyfile

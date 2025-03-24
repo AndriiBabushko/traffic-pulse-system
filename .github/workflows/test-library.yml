@@ -17,7 +17,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y cmake g++
+        run: |
+          apt-get update
+          apt-get install -y software-properties-common
+          add-apt-repository -y ppa:sumo/stable
+          apt-get update
+          apt-get install -y cmake g++ git libpugixml-dev git-lfs sumo sumo-tools sumo-doc
+          git lfs pull
+
       - name: Run tests
         run: make test_library
