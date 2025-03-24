@@ -34,10 +34,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBSUMOCPP} pugixml)
 include(FetchContent)
 FetchContent_Declare(
         googletest
-        URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
-        DOWNLOAD_EXTRACT_TIMESTAMP true
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        v1.15.2
 )
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 enable_testing()
