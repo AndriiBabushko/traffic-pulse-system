@@ -12,7 +12,7 @@ on:
       - library
 
 jobs:
-  test_root:
+  test-library:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

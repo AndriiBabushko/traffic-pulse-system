@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  test_root:
+  test-app-and-library:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
