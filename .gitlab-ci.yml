@@ -8,7 +8,6 @@ default:
     - add-apt-repository -y ppa:sumo/stable
     - apt-get update
     - apt-get install -y cmake g++ git libpugixml-dev git-lfs sumo sumo-tools sumo-doc
-    - git lfs install
     - git lfs pull
 
 stages:
