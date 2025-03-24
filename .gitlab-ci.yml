@@ -4,7 +4,7 @@ default:
     - docker
   before_script:
     - apt-get update
-    - apt-get install -y cmake g++ git pugixml git-lfs sumo sumo-tools
+    - apt-get install -y cmake g++ git libpugixml-dev git-lfs sumo sumo-tools
     - git lfs install
 
 stages:
