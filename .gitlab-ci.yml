@@ -3,7 +3,9 @@ default:
   tags:
     - docker
   before_script:
-    - apt update && apt install -y cmake g++
+    - apt-get update
+    - apt-get install -y cmake g++
+    - apt-get install -y sumo sumo-tools libsumo-dev
 
 stages:
   - test
@@ -36,7 +38,7 @@ test_all:
 build-doxygen:
   stage: build
   before_script:
-    - apt update && apt install -y doxygen graphviz
+    - apt-get update && apt-get install -y doxygen graphviz
   script:
     - cd library
     - doxygen Doxyfile
