@@ -2,7 +2,6 @@
 // Created by andrii on 3/20/25.
 //
 #include "core/PulseLoader.h"
-
 #include <pugixml.hpp>
 #include <stdexcept>
 #include <iostream>
@@ -13,114 +12,181 @@
 #include "entities/PulseIntersection.h"
 #include "entities/PulseTrafficLight.h"
 #include "types/PulsePosition.h"
+#include "types/PulseEvent.h"
 
-namespace
-{
-    int g_nextRoadID = 1;
+namespace {
+    int g_next_road_id = 1;
 }
 
-PulseLoader::PulseLoader(PulseDataManager& data_manager, std::string netFilePath)
-    : m_data_manager(data_manager),
-      m_netFilePath(std::move(netFilePath))
+/**
+ * @brief Helper to count the number of child nodes that match a certain predicate.
+ */
+template <typename Pred>
+static int count_children_if(const pugi::xml_node& parent, const char* child_name, Pred pred) {
+    int count = 0;
+    for (auto node : parent.children(child_name)) {
+        if (pred(node)) {
+            count++;
+        }
+    }
+    return count;
+}
+
+PulseLoader::PulseLoader(PulseDataManager& data_manager, std::string net_file, ISubject& subject)
+    : m_data_manager(data_manager)
+    , m_net_file_path(std::move(net_file))
+    , m_subject(subject)
 {
 }
 
 void PulseLoader::loadNetworkData() const {
-    if (!std::filesystem::exists(m_netFilePath)) {
-        throw std::runtime_error("[PulseLoader] Network file not found: " + m_netFilePath);
-    }
+    using namespace std;
 
-    std::cout << "[PulseLoader] LOADING_START: Parsing network file: " << m_netFilePath << std::endl;
+    // 1) Notify LOADING_START
+    PulseEvent start_event;
+    start_event.type = PulseEvents::LOADING_START;
+    start_event.message = "[PulseLoader] Starting network file load...";
+    start_event.data = std::any(); // no extra data
+    m_subject.notify(start_event);
+
+    if (!std::filesystem::exists(m_net_file_path)) {
+        throw std::runtime_error("[PulseLoader] Network file not found: " + m_net_file_path);
+    }
+    cout << "[PulseLoader] LOADING_START: Parsing network file: " << m_net_file_path << endl;
 
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(m_netFilePath.c_str());
+    pugi::xml_parse_result result = doc.load_file(m_net_file_path.c_str());
     if (!result) {
-        throw std::runtime_error("Could not parse network file: " + m_netFilePath +
-                                   ", error: " + result.description());
+        throw std::runtime_error("Could not parse network file: " + m_net_file_path +
+                                 ", error: " + result.description());
     }
-
-    pugi::xml_node netNode = doc.child("net");
-    if (!netNode) {
+    pugi::xml_node net_node = doc.child("net");
+    if (!net_node) {
         throw std::runtime_error("No <net> element found in network file.");
     }
 
-    // 1) Parse <junction> elements
-    bool foundAnyJunction = false;
-    for (pugi::xml_node jnode : netNode.children("junction")) {
-        foundAnyJunction = true;
-        std::string jID = jnode.attribute("id").as_string();
+    // --- Count total items for "smooth" progress ---
+    // # of all junctions:
+    int total_junctions = count_children_if(net_node, "junction", [](pugi::xml_node){return true;});
+    // # of traffic_light junctions specifically:
+    int total_tlights = count_children_if(net_node, "junction", [](pugi::xml_node node){
+        return std::string(node.attribute("type").as_string("")) == "traffic_light";
+    });
+    // # of edges (excluding "internal")
+    int total_edges = 0;
+    for (auto edge_node : net_node.children("edge")) {
+        std::string func = edge_node.attribute("function").as_string("");
+        if (func != "internal") {
+            total_edges++;
+        }
+    }
+    // We'll parse them in three "phases" but each item increments the progress.
+
+    float items_parsed = 0.0f;
+    auto total_items  = static_cast<float>(total_junctions + total_tlights + total_edges);
+
+    // Helper lambda to notify progress as we parse each item
+    auto notify_progress = [&](const std::string& msg) {
+        PulseEvent progress_event;
+        progress_event.type = PulseEvents::LOADING_PROGRESS;
+        progress_event.message = msg;
+        float ratio = items_parsed / total_items;
+        progress_event.data = std::any(ratio);
+        m_subject.notify(progress_event);
+    };
+
+    // ============ PHASE 1: JUNCTIONS ============
+    bool found_any_junction = false;
+    for (auto jnode : net_node.children("junction")) {
+        found_any_junction = true;
+        // each iteration => parse one junction
+        std::string j_id = jnode.attribute("id").as_string();
         double x = jnode.attribute("x").as_double(0.0);
         double y = jnode.attribute("y").as_double(0.0);
-        auto intersection = std::make_unique<PulseIntersection>(jID, PulsePosition{x, y});
+
+        auto intersection = std::make_unique<PulseIntersection>(j_id, PulsePosition{x, y});
         m_data_manager.addIntersection(std::move(intersection));
+
+        items_parsed += 1.0f;
+        notify_progress("Parsing junction: " + j_id);
     }
-    if (!foundAnyJunction) {
+    if (!found_any_junction) {
         throw std::runtime_error("No <junction> element found in network file.");
     }
 
-    // 2) For each junction of type "traffic_light", add a traffic light to the data manager.
-    for (pugi::xml_node jnode : netNode.children("junction")) {
-        std::string jType = jnode.attribute("type").as_string("");
-        if (jType == "traffic_light") {
-            std::string tlID = jnode.attribute("id").as_string();
-            auto tl = std::make_unique<PulseTrafficLight>(tlID);
+    // ============ PHASE 2: TRAFFIC LIGHTS ============
+    for (auto jnode : net_node.children("junction")) {
+        std::string j_type = jnode.attribute("type").as_string("");
+        if (j_type == "traffic_light") {
+            std::string tl_id = jnode.attribute("id").as_string();
+            auto tl = std::make_unique<PulseTrafficLight>(tl_id);
             m_data_manager.addTrafficLight(std::move(tl));
+
+            items_parsed += 1.0f;
+            notify_progress("Parsing traffic light: " + tl_id);
         }
     }
 
-    // 3) Parse <edge> elements to create road connections.
-    for (pugi::xml_node edgeNode : netNode.children("edge")) {
-        // Optionally skip edges that are internal.
-        std::string func = edgeNode.attribute("function").as_string("");
+    // ============ PHASE 3: EDGES ============
+    for (auto edge_node : net_node.children("edge")) {
+        std::string func = edge_node.attribute("function").as_string("");
         if (func == "internal") {
-            continue;
+            continue; // skip
         }
 
-        std::string fromID = edgeNode.attribute("from").as_string("");
-        std::string toID   = edgeNode.attribute("to").as_string("");
+        std::string from_id = edge_node.attribute("from").as_string("");
+        std::string to_id   = edge_node.attribute("to").as_string("");
 
-        PulseIntersection* fromInter = m_data_manager.getIntersection(fromID);
-        PulseIntersection* toInter   = m_data_manager.getIntersection(toID);
-        if (fromInter && toInter) {
+        PulseIntersection* from_inter = m_data_manager.getIntersection(from_id);
+        PulseIntersection* to_inter   = m_data_manager.getIntersection(to_id);
+        if (from_inter && to_inter) {
             double distance = 100.0;
-            if (pugi::xml_node laneNode = edgeNode.child("lane")) {
-                distance = laneNode.attribute("length").as_double(100.0);
+            if (pugi::xml_node lane_node = edge_node.child("lane")) {
+                distance = lane_node.attribute("length").as_double(100.0);
             }
 
-            // Try to obtain a traffic light for the "from" intersection.
-            PulseTrafficLight* tl = m_data_manager.getTrafficLight(fromID);
+            // get traffic light
+            PulseTrafficLight* tl = m_data_manager.getTrafficLight(from_id);
             if (!tl) {
-                // Instead of throwing, create a default traffic light.
-                std::cout << "[PulseLoader] Warning: No traffic light found for intersection: "
-                          << fromID << ". Creating a default one." << std::endl;
-                auto dummyTL = std::make_unique<PulseTrafficLight>(fromID);
-                tl = dummyTL.get();
-                m_data_manager.addTrafficLight(std::move(dummyTL));
+                cout << "[PulseLoader] Warning: No traffic light found for intersection: "
+                     << from_id << ". Creating a default one." << endl;
+                auto dummy_tl = std::make_unique<PulseTrafficLight>(from_id);
+                tl = dummy_tl.get();
+                m_data_manager.addTrafficLight(std::move(dummy_tl));
             }
-            int roadID = generateRoadID();
-            fromInter->addRoadConnection(roadID, toInter, tl, distance);
+            int road_id = generateRoadID();
+            from_inter->addRoadConnection(road_id, to_inter, tl, distance);
 
-            // If the edge is two-way, create the reverse connection.
-            bool isOneWay = edgeNode.attribute("oneway").as_bool(false);
-            if (!isOneWay) {
-                int revRoadID = generateRoadID();
-                // For the reverse direction, try to obtain a traffic light for the "to" intersection.
-                PulseTrafficLight* revTL = m_data_manager.getTrafficLight(toID);
-                if (!revTL) {
-                    std::cout << "[PulseLoader] Warning: No traffic light found for intersection: "
-                              << toID << ". Creating a default one." << std::endl;
-                    auto dummyRevTL = std::make_unique<PulseTrafficLight>(toID);
-                    revTL = dummyRevTL.get();
-                    m_data_manager.addTrafficLight(std::move(dummyRevTL));
+            // If not one-way, create reverse
+            bool is_one_way = edge_node.attribute("oneway").as_bool(false);
+            if (!is_one_way) {
+                int rev_road_id = generateRoadID();
+                PulseTrafficLight* rev_tl = m_data_manager.getTrafficLight(to_id);
+                if (!rev_tl) {
+                    cout << "[PulseLoader] Warning: No traffic light found for intersection: "
+                         << to_id << ". Creating a default one." << endl;
+                    auto dummy_rev_tl = std::make_unique<PulseTrafficLight>(to_id);
+                    rev_tl = dummy_rev_tl.get();
+                    m_data_manager.addTrafficLight(std::move(dummy_rev_tl));
                 }
-                toInter->addRoadConnection(revRoadID, fromInter, revTL, distance);
+                to_inter->addRoadConnection(rev_road_id, from_inter, rev_tl, distance);
             }
         }
+
+        items_parsed += 1.0f;
+        notify_progress("Parsing edge from " + from_id + " to " + to_id);
     }
 
-    std::cout << "[PulseLoader] Network file parsed successfully." << std::endl;
+    cout << "[PulseLoader] Network file parsed successfully." << endl;
+
+    // Notify LOADING_COMPLETE
+    PulseEvent done_event;
+    done_event.type = PulseEvents::LOADING_COMPLETE;
+    done_event.message = "Network data loading completed!";
+    done_event.data = std::any(1.0f);
+    m_subject.notify(done_event);
 }
 
 int PulseLoader::generateRoadID() {
-    return g_nextRoadID++;
+    return g_next_road_id++;
 }

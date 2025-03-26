@@ -10,8 +10,6 @@
 #include "entities/PulseTrafficLight.h"
 #include "types/PulsePosition.h"
 #include "constants/SumoConfigPath.h"
-#include <iostream>
-#include <unordered_map>
 
 /**
  * @brief Mock SumoIntegration for testing purposes.

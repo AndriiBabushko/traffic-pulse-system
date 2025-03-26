@@ -5,7 +5,7 @@ project(traffic_pulse_library VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAK_CURRENT_SOURCE_DIR}/include)
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/config/sumo)
 # Copy entire "config/sumo/" directory structure to the build directory

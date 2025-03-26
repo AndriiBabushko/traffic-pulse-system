@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 
 #include "core/PulseDataManager.h"
+#include <core/PulseLoader.h>
 #include "core/SumoIntegration.h"
 
 #include "entities/PulseIntersection.h"
@@ -25,26 +26,26 @@ public:
     void stopSimulation() override {}
     void stepSimulation() const override {}
 
-    bool isRunning() const override { return true; }
+    [[nodiscard]] bool isRunning() const override { return true; }
 
-    std::vector<std::string> getAllTrafficLights() const override
+    [[nodiscard]] std::vector<std::string> getAllTrafficLights() const override
     {
         return {"mock_tl1", "mock_tl2"};
     }
 
-    std::vector<std::string> getAllVehicles() const override
+    [[nodiscard]] std::vector<std::string> getAllVehicles() const override
     {
         return {"mock_vehicle1", "mock_vehicle2"};
     }
 
-    std::pair<double, double> getVehiclePosition(const std::string& vehicle_id) const override
+    [[nodiscard]] std::pair<double, double> getVehiclePosition(const std::string& vehicle_id) const override
     {
         if (vehicle_id == "mock_vehicle1") return {10.0, 20.0};
         if (vehicle_id == "mock_vehicle2") return {30.0, 40.0};
         return {0.0, 0.0};
     }
 
-    std::string getTrafficLightState(const std::string& tl_id) const override
+    [[nodiscard]] std::string getTrafficLightState(const std::string& tl_id) const override
     {
         return "rGrG";
     }

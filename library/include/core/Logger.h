@@ -7,8 +7,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <mutex>
-#include <iostream>
 #include "interfaces/IObserver.h"
 
 /**
@@ -25,9 +23,9 @@ public:
 
     /**
      * @brief Logs an event.
-     * @param eventDescription The event description to log.
+     * @param event The event description to log.
      */
-    void update(const std::string& eventDescription) override;
+    void update(const PulseEvent& event) override;
 
 private:
     Logger() = default;

@@ -8,8 +8,6 @@
 #define ISUBJECT_H
 
 #include <memory>
-#include <vector>
-#include <string>
 #include "IObserver.h"
 
 /**
@@ -18,10 +16,26 @@
 class ISubject {
 public:
     virtual ~ISubject() = default;
+
+    /**
+     * @brief Attach an observer to receive events.
+     * @param observer Shared pointer to the observer.
+     */
     virtual void attach(std::shared_ptr<IObserver> observer) = 0;
+
+    /**
+     * @brief Detach an observer so it no longer receives events.
+     * @param observer Shared pointer to the observer.
+     */
     virtual void detach(std::shared_ptr<IObserver> observer) = 0;
-    virtual void notify(const std::string& eventDescription) = 0;
+
+    /**
+     * @brief Notifies all attached observers with a PulseEvent.
+     * @param event The event that occurred.
+     */
+    virtual void notify(const PulseEvent& event) = 0;
 };
 
-
 #endif //ISUBJECT_H
+
+

@@ -5,6 +5,7 @@
 #pragma once
 
 #include "types/PulseEntityType.h"
+#include "types/PulseEvent.h"
 #include "types/PulseEvents.h"
 #include "types/PulsePosition.h"
 #include "types/PulseVehicleRole.h"

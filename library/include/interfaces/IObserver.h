@@ -4,22 +4,24 @@
 
 #pragma once
 
-#ifndef OBSERVER_H
-#define OBSERVER_H
+#ifndef IOBSERVER_H
+#define IOBSERVER_H
 
-#include <string>
+#include "types/PulseEvent.h"
 
 /**
- * @brief Interface for objects that observe changes.
+ * @brief Interface for observers that receive updates from a subject.
  */
 class IObserver {
 public:
     virtual ~IObserver() = default;
+
     /**
-     * @brief Called when the subject notifies observers.
-     * @param eventDescription A string describing the event.
+     * @brief Called when the subject emits an event.
+     * @param event The event data.
      */
-    virtual void update(const std::string& eventDescription) = 0;
+    virtual void update(const PulseEvent& event) = 0;
 };
 
-#endif // OBSERVER_H
+#endif //IOBSERVER_H
+

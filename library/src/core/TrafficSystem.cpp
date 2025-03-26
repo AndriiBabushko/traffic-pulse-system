@@ -10,18 +10,19 @@
 #include "core/Logger.h"
 #include "constants/SumoConfigPath.h"
 #include "constants/SumoNetPath.h"
+
 #include <chrono>
 #include <thread>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
 
-TrafficSystem::TrafficSystem(double updateFrequency)
-    : m_dataManager(PulseDataManager::getInstance()),
-      m_updateFrequency(updateFrequency)
+TrafficSystem::TrafficSystem(double update_frequency)
+    : m_data_manager(PulseDataManager::getInstance())
+    , m_update_frequency(update_frequency)
 {
     m_sumo = std::make_unique<SumoIntegration>(SUMO_CONFIG_PATH);
-    m_algo = std::make_unique<PulseTrafficAlgo>(m_dataManager, *m_sumo);
+    m_algo = std::make_unique<PulseTrafficAlgo>(m_data_manager, *m_sumo);
 }
 
 TrafficSystem::~TrafficSystem() {
@@ -30,54 +31,68 @@ TrafficSystem::~TrafficSystem() {
     }
 }
 
-void TrafficSystem::attach(const std::shared_ptr<IObserver> observer) {
+void TrafficSystem::attach(std::shared_ptr<IObserver> observer) {
     m_observers.push_back(observer);
 }
 
-void TrafficSystem::detach(const std::shared_ptr<IObserver> observer) {
+void TrafficSystem::detach(std::shared_ptr<IObserver> observer) {
     auto it = std::ranges::remove(m_observers, observer).begin();
     m_observers.erase(it, m_observers.end());
 }
 
-void TrafficSystem::notify(const std::string& eventDescription) {
-    for (const auto& obs : m_observers) {
-        obs->update(eventDescription);
+void TrafficSystem::notify(const PulseEvent& event) {
+    for (auto& obs : m_observers) {
+        if (obs) {
+            obs->update(event);
+        }
     }
 }
 
 PulseDataManager& TrafficSystem::getDataManager() const {
-    return m_dataManager;
+    return m_data_manager;
 }
 
 void TrafficSystem::requestStop() {
-    m_stopRequested.store(true);
+    m_stop_requested.store(true);
 }
 
 void TrafficSystem::run() {
     try {
+        // Start the SUMO simulation
         m_sumo->startSimulation();
-        notify("Event: SIMULATION_START");
 
+        // Notify that simulation started
+        notify({PulseEvents::SIMULATION_START, "Simulation started", {}});
+
+        // Load the network data
         std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
         std::string expected_path = config_dir + SUMO_NET_PATH;
-        PulseLoader loader(m_dataManager, expected_path);
-        loader.loadNetworkData();
-        notify("Event: LOADING_COMPLETE");
 
-        double simTime = 0.0;
-        while (!m_stopRequested.load()) {
+        // Create a PulseLoader with 'this' as subject
+        PulseLoader loader(m_data_manager, expected_path, *this);
+        loader.loadNetworkData();
+
+        double sim_time = 0.0;
+        while (!m_stop_requested.load()) {
             m_sumo->stepSimulation();
-            m_algo->runOnce(simTime);
+            m_algo->runOnce(sim_time);
+
             std::stringstream ss;
-            ss << "Event: SIMULATION_STEP, time: " << simTime;
-            notify(ss.str());
+            ss << "Simulation step at time: " << sim_time;
+            notify({PulseEvents::SIMULATION_STEP, ss.str(), {}});
+
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            simTime += m_updateFrequency;
+            sim_time += m_update_frequency;
         }
 
         m_sumo->stopSimulation();
-        notify("Event: SIMULATION_END");
+
+        notify({PulseEvents::SIMULATION_END, "Simulation ended", {}});
     } catch (const std::exception& ex) {
-        notify(std::string("Error in TrafficSystem: ") + ex.what());
+        notify({
+            PulseEvents::SIMULATION_END,
+            std::string("Error in TrafficSystem: ") + ex.what(),
+            {}
+        });
     }
 }

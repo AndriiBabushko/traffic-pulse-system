@@ -9,9 +9,9 @@
 
 #include <memory>
 #include <vector>
-#include <string>
 #include <atomic>
 #include "interfaces/ISubject.h"
+#include "types/PulseEvent.h"
 
 /**
  * @brief Main system class for traffic pulse.
@@ -26,9 +26,9 @@ class TrafficSystem : public ISubject {
 public:
     /**
      * @brief Constructs a TrafficSystem.
-     * @param updateFrequency The frequency (in seconds) at which the system updates and notifies observers.
+     * @param update_frequency The frequency (in seconds) at which the system updates observers.
      */
-    explicit TrafficSystem(double updateFrequency = 5.0);
+    explicit TrafficSystem(double update_frequency = 5.0);
 
     ~TrafficSystem() override;
 
@@ -39,8 +39,6 @@ public:
 
     /**
      * @brief Requests the simulation to stop.
-     *
-     * This method can be called from another thread or context to signal the simulation loop to exit.
      */
     void requestStop();
 
@@ -51,16 +49,16 @@ public:
     void attach(std::shared_ptr<class IObserver> observer) override;
 
     /**
-     * @brief Detach an observer.
+     * @brief Detach an observer so it no longer receives events.
      * @param observer Shared pointer to the observer.
      */
     void detach(std::shared_ptr<class IObserver> observer) override;
 
     /**
-     * @brief Notifies all attached observers with an event description.
-     * @param eventDescription The description of the event.
+     * @brief Notifies all attached observers with the given event.
+     * @param event The event that occurred.
      */
-    void notify(const std::string& eventDescription) override;
+    void notify(const PulseEvent& event) override;
 
     /**
      * @brief Provides access to the data manager.
@@ -68,20 +66,21 @@ public:
     [[nodiscard]] class PulseDataManager& getDataManager() const;
 
 private:
-    // Internal modules; created internally.
+    // Internal modules
     std::unique_ptr<class SumoIntegration> m_sumo;
-    // PulseDataManager is a singleton.
-    class PulseDataManager& m_dataManager;
     std::unique_ptr<class PulseTrafficAlgo> m_algo;
+
+    // PulseDataManager (singleton)
+    class PulseDataManager& m_data_manager;
 
     // Observer list
     std::vector<std::shared_ptr<class IObserver>> m_observers;
 
     // Simulation update frequency (in seconds)
-    double m_updateFrequency;
+    double m_update_frequency;
 
-    // Flag to signal simulation stop.
-    std::atomic<bool> m_stopRequested{false};
+    // Flag to signal simulation stop
+    std::atomic<bool> m_stop_requested{false};
 };
 
 #endif //TRAFFICSYSTEM_H

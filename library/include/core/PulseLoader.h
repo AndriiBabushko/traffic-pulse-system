@@ -7,28 +7,27 @@
 #define PULSELOADER_H
 
 #include <string>
-
-class PulseDataManager;
+#include "interfaces/ISubject.h"
+#include "core/PulseDataManager.h"
 
 /**
  * @class PulseLoader
- * @brief Responsible for loading and parsing SUMO .net.xml files, creating intersections,
- *        traffic lights, and road connections in the PulseDataManager.
+ * @brief Loads and parses a SUMO .net.xml file, populating PulseDataManager with intersections,
+ *        traffic lights, etc. It notifies its subject (e.g. TrafficSystem) about loading progress.
  */
-class PulseLoader
-{
+class PulseLoader {
 public:
     /**
-     * @brief Constructs a PulseLoader with reference to the data manager and path to net file.
-     * @param data_manager Reference to the singleton or external PulseDataManager.
-     * @param netFilePath Path to the SUMO .net.xml file (uncompressed).
+     * @brief Constructs a PulseLoader with a reference to PulseDataManager and a path to the net file.
+     * @param data_manager Reference to the data manager.
+     * @param net_file Path to the SUMO .net.xml.
+     * @param subject An ISubject (e.g. TrafficSystem) to notify about loading progress.
      */
-    PulseLoader(PulseDataManager& data_manager, std::string  netFilePath);
+    PulseLoader(PulseDataManager& data_manager, std::string net_file, ISubject& subject);
 
     /**
-     * @brief Parses the network file and populates the PulseDataManager with intersections,
-     *        traffic lights, and naive road connections.
-     * @throws std::runtime_error if parsing fails or required XML elements are missing.
+     * @brief Parses the network file and populates PulseDataManager.
+     *        Notifies the subject about loading progress at each step.
      */
     void loadNetworkData() const;
 
@@ -39,9 +38,9 @@ private:
      */
     static int generateRoadID();
 
-private:
     PulseDataManager& m_data_manager;
-    std::string       m_netFilePath;
+    std::string       m_net_file_path;
+    ISubject&         m_subject;
 };
 
 #endif //PULSELOADER_H

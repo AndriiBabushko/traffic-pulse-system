@@ -52,7 +52,9 @@
 - [X] ( + ) Run SUMO simulation and collect some sample data
 - [ ] ( + ) Refactor basic classes and functions to handle simulation data
 - [ ] ( + ) Display the simulation data in the console
-- [ ] ( + ) Implement Observer | Singleton to notify subscribers of changes
+- [ ] ( + ) Implement loading static data from SUMO files into data manager
+- [ ] ( + ) Implement Observer pattern to notify subscribers of changes
+  - [ ] ( + ) Type Observer notifications with PulseEvent
 - [ ] ( + ) Add tests for the core functionality
 
 ### Testing
@@ -73,13 +75,13 @@
 - GitHub Pages
 
 **Tasks:**
-- [ ] ( + ) Set up Doxygen to generate documentation
-- [ ] ( + ) Generate documentation for classes, functions, etc.
+- [X] ( + ) Set up Doxygen to generate documentation
+- [X] ( + ) Generate documentation for classes, functions, etc.
 - [ ] ( ++ ) Update `README.md`
 - [ ] ( ++ ) Update `CHANGELOG.md`
 - [ ] ( ++ ) Update `CONTRIBUTING.md`
-- [ ] ( ++ ) Set up GitHub Pages to display documentation
-- [ ] ( ++ ) Make the documentation easily accessible in the GitHub repo
+- [X] ( ++ ) Set up GitHub Pages to display documentation
+- [X] ( ++ ) Make the documentation easily accessible in the GitHub repo
 
 ### Library Publishing
 
@@ -93,6 +95,11 @@
 - [ ] ( + ) Add tests
 - [ ] ( +++ ) Publish the library
 - [ ] ( +++ ) Automate the publishing process
+
+### Future Improvements
+
+**Tasks:**
+- [ ] ( ++ ) Implement strict and lenient modes for data processing, e.g. Strict mode: Throw an error if a traffic light is missing. Lenient mode: Create a default traffic light and log a warning.
 
 ---
 
@@ -148,7 +155,7 @@
 ### Testing
 
 **Requirements:**
-- Testing framework (GoogleTest / Catch2 / QTest)
+- Testing framework (GoogleTest)
 - Docker-based Continuous Integration
 
 **Tasks:**
@@ -163,13 +170,16 @@
 - UI documentation for Qt/QML
 
 **Tasks:**
-- [ ] ( + ) Document key classes and algorithms of the Traffic Pulse Library
+- [ ] ( + ) Document the core logic of the Traffic Pulse system
+- [ ] ( ++ ) Extend the documentation with more classes and functions
 - [ ] ( ++ ) Add sequence/UML diagrams for main components
 - [ ] ( ++ ) Include screenshots or short videos for UI demonstration
 
 ### Deployment & Maintenance
 
 **Tasks:**
-- [ ] ( + ) Set up Docker containers for the database and the Traffic Pulse service
+- [ ] ( ++ ) Set up Docker containers for the database and the Traffic Pulse service
 - [ ] ( ++ ) Test cross-platform compatibility (Linux, macOS)
-- [ ] ( +++ ) Configure backups and monitoring for reliable operations  
+- [ ] ( +++ ) Automate SUMO files generation:
+    - [ ] ( +++ ) Host the generation tool on the server and download it using Makefile command.
+    - [ ] ( +++ ) Make command more customizable for passing parameters to generate different scenarios.
