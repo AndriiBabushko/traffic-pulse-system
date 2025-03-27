@@ -25,13 +25,13 @@ public:
      * @param traffic_light_id Unique string identifier for the traffic light.
      * @param durations Custom durations for each light state.
      */
-    explicit PulseTrafficLight(const std::string& traffic_light_id, const TrafficLightDurations& durations = {});
+    explicit PulseTrafficLight(std::string traffic_light_id, const TrafficLightDurations& durations = {});
 
     /**
      * @brief Retrieves the traffic light ID.
      * @return The unique string identifier.
      */
-    [[nodiscard]] std::string getId() const;
+    [[nodiscard]] std::string getId() const override;
 
     /**
      * @brief Sets the current state of the traffic light.

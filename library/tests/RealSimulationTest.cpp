@@ -77,11 +77,12 @@ TEST(RealSimulationTest, CheckLoadingAndSimulationEvents) {
             if (ev.data.has_value()) {
                 if (ev.data.type() == typeid(float)) {
                     float progress = std::any_cast<float>(ev.data);
+                    // TODO:
                     // e.g. EXPECT_GE(progress, 0.0f);
                 }
             }
             break;
-        case PulseEvents::LOADING_COMPLETE:1.
+        case PulseEvents::LOADING_COMPLETE:
             found_loading_complete = true;
             break;
         default:

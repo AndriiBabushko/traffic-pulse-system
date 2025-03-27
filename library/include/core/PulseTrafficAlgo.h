@@ -10,21 +10,9 @@
 #include <unordered_map>
 #include <vector>
 #include <string>
-#include <queue>
-#include <cmath>
 #include "core/PulseDataManager.h"
 #include "core/SumoIntegration.h"
-#include "entities/PulseIntersection.h"
-#include "entities/PulseTrafficLight.h"
-
-/**
- * @struct GreenWaveCorridor
- * @brief Represents a path (sequence) of intersections for the green wave.
- */
-struct GreenWaveCorridor {
-    std::vector<std::string> intersection_ids; ///< Ordered intersections along this path
-    double target_speed_m_s;                   ///< The speed to maintain the wave
-};
+#include "types/GreenWaveCoridor.h"
 
 /**
  * @class PulseTrafficAlgo
@@ -74,7 +62,7 @@ private:
 private:
     PulseDataManager& m_data_manager;
     SumoIntegration&  m_sumo_integration;
-    std::unordered_map<std::string, double> m_intersectionGreenOffset; ///< Offset for each intersection.
+    std::unordered_map<std::string, double> m_intersection_green_offset; ///< Offset for each intersection.
     double m_cycle_length   = 90.0;  ///< Total cycle duration in seconds.
     double m_green_duration = 45.0;  ///< Duration of green phase.
 };

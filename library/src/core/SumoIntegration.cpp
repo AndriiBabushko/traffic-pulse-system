@@ -12,12 +12,11 @@
 
 #include "constants/CMakeBinaryDir.h"
 
-SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypassConfigCheck)
+SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypass_config_check)
     : m_running(false)
 {
-    if (!bypassConfigCheck) {
-        std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
-
+    if (!bypass_config_check) {
+        const std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
         std::string expected_path = config_dir + sumo_config;
 
         if (!std::filesystem::exists(config_dir)) {
@@ -26,12 +25,14 @@ SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypassConfi
                 "\nEnsure that the directory exists and is copied correctly."
             );
         }
+
         if (!std::filesystem::exists(expected_path)) {
             throw std::runtime_error(
                 "SUMO config file not found! Expected at: " + expected_path +
                 "\nEnsure you have placed the correct file inside 'config/sumo/'."
             );
         }
+
         m_sumo_config = std::move(expected_path);
     } else {
         // Bypass file checks for testing/mocking purposes.

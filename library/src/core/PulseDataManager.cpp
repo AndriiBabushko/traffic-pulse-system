@@ -28,7 +28,7 @@ void PulseDataManager::addIntersection(std::unique_ptr<PulseIntersection> inters
 
 PulseIntersection* PulseDataManager::getIntersection(const std::string& intersection_id) const
 {
-    auto it = m_intersections.find(intersection_id);
+    const auto it = m_intersections.find(intersection_id);
     return (it != m_intersections.end()) ? it->second.get() : nullptr;
 }
 
@@ -47,7 +47,7 @@ void PulseDataManager::addTrafficLight(std::unique_ptr<PulseTrafficLight> traffi
 
 PulseTrafficLight* PulseDataManager::getTrafficLight(const std::string& traffic_light_id) const
 {
-    auto it = m_traffic_lights.find(traffic_light_id);
+    const auto it = m_traffic_lights.find(traffic_light_id);
     return (it != m_traffic_lights.end()) ? it->second.get() : nullptr;
 }
 
@@ -113,106 +113,102 @@ void PulseDataManager::syncFromSumo(const SumoIntegration &sumo)
     clearAll();
 
     // 1) Summo uses traffic lights to represent intersections, so let's load them as well
-    auto intersectionIDs = sumo.getAllTrafficLights();
-    for (const auto& id : intersectionIDs) {
+    auto intersection_ids = sumo.getAllTrafficLights();
+    for (const auto& id : intersection_ids) {
         auto intersection = std::make_unique<PulseIntersection>(id, PulsePosition{0.0, 0.0});
         addIntersection(std::move(intersection));
     }
 
     // 2) Create traffic light objects
-    for (const auto& tl_id : intersectionIDs) {
+    for (const auto& tl_id : intersection_ids) {
         auto traffic_light = std::make_unique<PulseTrafficLight>(tl_id);
         addTrafficLight(std::move(traffic_light));
     }
 
     // 3) Load vehicles
-    auto vehicleIDs = sumo.getAllVehicles();
-    for (const auto& veh_id : vehicleIDs) {
+    auto vehicle_ids = sumo.getAllVehicles();
+    for (const auto& veh_id : vehicle_ids) {
         auto [x, y] = sumo.getVehiclePosition(veh_id);
-        auto newVehicle = std::make_unique<PulseVehicle>(
+        auto new_vehicle = std::make_unique<PulseVehicle>(
             veh_id,
-            PulseVehicleType::CAR,       // could refine from SUMO data if desired
-            PulseVehicleRole::NORMAL,    // likewise
+            PulseVehicleType::CAR,       // TODO: could refine from SUMO data if desired
+            PulseVehicleRole::NORMAL,    // TODO: likewise
             PulsePosition{x, y}
         );
-        addVehicle(std::move(newVehicle));
+        addVehicle(std::move(new_vehicle));
     }
 }
 
 void PulseDataManager::updateFromSumo(const SumoIntegration &sumo)
 {
     // --- Vehicles ---
-    auto sumoVehicleIDs = sumo.getAllVehicles();
-    std::unordered_set<std::string> sumoVehSet(sumoVehicleIDs.begin(), sumoVehicleIDs.end());
+    auto sumo_vehicle_ids = sumo.getAllVehicles();
+    std::unordered_set<std::string> sumo_veh_set(sumo_vehicle_ids.begin(), sumo_vehicle_ids.end());
 
     // Remove local vehicles not in SUMO
-    std::vector<std::string> toRemoveVeh;
-    for (const auto& [id, vehPtr] : m_vehicles) {
-        if (!sumoVehSet.count(id)) {
-            toRemoveVeh.push_back(id);
+    std::vector<std::string> to_remove_veh;
+    for (const auto& [id, veh_ptr] : m_vehicles) {
+        if (!sumo_veh_set.count(id)) {
+            to_remove_veh.push_back(id);
         }
     }
-    for (const auto& id : toRemoveVeh) {
+    for (const auto& id : to_remove_veh) {
         m_vehicles.erase(id);
     }
 
     // Add new vehicles from SUMO
-    for (const auto& veh_id : sumoVehicleIDs) {
+    for (const auto& veh_id : sumo_vehicle_ids) {
         if (!m_vehicles.count(veh_id)) {
             auto [x, y] = sumo.getVehiclePosition(veh_id);
-            auto newVeh = std::make_unique<PulseVehicle>(
+            auto new_veh = std::make_unique<PulseVehicle>(
                 veh_id,
-                PulseVehicleType::CAR,
-                PulseVehicleRole::NORMAL,
+                PulseVehicleType::CAR,       // TODO: could refine from SUMO data if desired
+                PulseVehicleRole::NORMAL,    // TODO: likewise
                 PulsePosition{x, y}
             );
-            m_vehicles[veh_id] = std::move(newVeh);
+            m_vehicles[veh_id] = std::move(new_veh);
         }
     }
 
     // Update positions of existing vehicles
-    for (auto& [id, vehPtr] : m_vehicles) {
+    for (auto& [id, veh_ptr] : m_vehicles) {
         auto [x, y] = sumo.getVehiclePosition(id);
-        vehPtr->updatePosition(PulsePosition{x, y});
+        veh_ptr->updatePosition(PulsePosition{x, y});
     }
 
     // --- Traffic Lights ---
-    auto tlIDs = sumo.getAllTrafficLights();
-    std::unordered_set<std::string> sumoTlSet(tlIDs.begin(), tlIDs.end());
+    auto tl_ids = sumo.getAllTrafficLights();
+    std::unordered_set<std::string> sumo_tl_set(tl_ids.begin(), tl_ids.end());
 
     // Remove local TLs not in SUMO
-    std::vector<std::string> toRemoveTL;
+    std::vector<std::string> to_remove_tl;
     for (const auto& [id, tlPtr] : m_traffic_lights) {
-        if (!sumoTlSet.count(id)) {
-            toRemoveTL.push_back(id);
+        if (!sumo_tl_set.contains(id)) {
+            to_remove_tl.push_back(id);
         }
     }
-    for (const auto& id : toRemoveTL) {
+    for (const auto& id : to_remove_tl) {
         m_traffic_lights.erase(id);
     }
 
     // Add newly discovered traffic lights
-    for (const auto& tl_id : tlIDs) {
-        if (!m_traffic_lights.count(tl_id)) {
+    for (const auto& tl_id : tl_ids) {
+        if (!m_traffic_lights.contains(tl_id)) {
             auto tl = std::make_unique<PulseTrafficLight>(tl_id);
             m_traffic_lights[tl_id] = std::move(tl);
         }
     }
 
     // Optionally retrieve the current state from SUMO:
-    for (auto& [id, tlPtr] : m_traffic_lights) {
-        auto sumoState = sumo.getTrafficLightState(id);
-        // Convert sumoState to a local enum:
-        if (sumoState.find('g') != std::string::npos) {
-            tlPtr->setState(TrafficLightState::GREEN);
+    for (auto& [id, tl_ptr] : m_traffic_lights) {
+        if (auto sumo_state = sumo.getTrafficLightState(id); sumo_state.find('g') != std::string::npos) {
+            tl_ptr->setState(TrafficLightState::GREEN);
         }
-        else if (sumoState.find('r') != std::string::npos) {
-            tlPtr->setState(TrafficLightState::RED);
+        else if (sumo_state.find('r') != std::string::npos) {
+            tl_ptr->setState(TrafficLightState::RED);
         }
         else {
-            tlPtr->setState(TrafficLightState::YELLOW);
+            tl_ptr->setState(TrafficLightState::YELLOW);
         }
     }
-
-    // Intersections: if mostly static, skip or do the same approach. Typically they don't vanish or appear dynamically.
 }

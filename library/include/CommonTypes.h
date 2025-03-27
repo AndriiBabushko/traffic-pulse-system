@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "types/GreenWaveCoridor.h"
 #include "types/PulseEntityType.h"
 #include "types/PulseEvent.h"
 #include "types/PulseEvents.h"

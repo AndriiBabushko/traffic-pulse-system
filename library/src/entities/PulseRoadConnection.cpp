@@ -6,7 +6,7 @@
 
 #include <stdexcept>
 
-PulseRoadConnection::PulseRoadConnection(PulseIntersection& intersection, PulseTrafficLight* traffic_light, double distance)
+PulseRoadConnection::PulseRoadConnection(PulseIntersection& intersection, PulseTrafficLight* traffic_light, const double distance)
     : m_connected_intersection(intersection), m_traffic_light(traffic_light), m_distance(distance) {
     if (!traffic_light) {
         throw std::invalid_argument("Traffic light pointer cannot be null.");

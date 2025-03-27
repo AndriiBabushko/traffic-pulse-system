@@ -36,7 +36,7 @@ void TrafficSystem::attach(std::shared_ptr<IObserver> observer) {
 }
 
 void TrafficSystem::detach(std::shared_ptr<IObserver> observer) {
-    auto it = std::ranges::remove(m_observers, observer).begin();
+    const auto it = std::ranges::remove(m_observers, observer).begin();
     m_observers.erase(it, m_observers.end());
 }
 
@@ -58,18 +58,14 @@ void TrafficSystem::requestStop() {
 
 void TrafficSystem::run() {
     try {
-        // Start the SUMO simulation
         m_sumo->startSimulation();
 
-        // Notify that simulation started
         notify({PulseEvents::SIMULATION_START, "Simulation started", {}});
 
-        // Load the network data
-        std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
-        std::string expected_path = config_dir + SUMO_NET_PATH;
+        const std::string config_dir = std::string(CMAKE_BINARY_DIR) + "/config/sumo/";
+        const std::string expected_path = config_dir + SUMO_NET_PATH;
 
-        // Create a PulseLoader with 'this' as subject
-        PulseLoader loader(m_data_manager, expected_path, *this);
+        const PulseLoader loader(m_data_manager, expected_path, *this);
         loader.loadNetworkData();
 
         double sim_time = 0.0;

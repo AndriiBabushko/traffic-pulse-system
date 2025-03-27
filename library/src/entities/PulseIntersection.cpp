@@ -15,16 +15,18 @@ PulsePosition PulseIntersection::getPosition() const {
 }
 
 void PulseIntersection::addRoadConnection(int road_id, PulseIntersection* intersection, PulseTrafficLight* traffic_light, double distance) {
-    // Check that both the intersection and traffic light are valid.
     if (!intersection) {
         throw std::invalid_argument("Invalid intersection reference.");
     }
+
     if (!traffic_light) {
         throw std::invalid_argument("Invalid traffic light reference.");
     }
+
     if (m_connected_roads.contains(road_id)) {
         throw std::runtime_error("Road connection with this ID already exists.");
     }
+
     m_connected_roads.emplace(road_id, PulseRoadConnection(*intersection, traffic_light, distance));
 }
 

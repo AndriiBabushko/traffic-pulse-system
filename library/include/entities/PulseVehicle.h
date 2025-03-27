@@ -28,13 +28,13 @@ public:
      * @param role Role of the vehicle (NORMAL, EMERGENCY, etc.).
      * @param position Initial position of the vehicle.
      */
-    PulseVehicle(const std::string& vehicle_id, PulseVehicleType type, PulseVehicleRole role, const PulsePosition& position);
+    PulseVehicle(std::string vehicle_id, PulseVehicleType type, PulseVehicleRole role, const PulsePosition& position);
 
     /**
      * @brief Retrieves the vehicle ID.
      * @return The unique string identifier.
      */
-    [[nodiscard]] std::string getId() const;
+    [[nodiscard]] std::string getId() const override;
 
     /**
      * @brief Retrieves the type of the vehicle.

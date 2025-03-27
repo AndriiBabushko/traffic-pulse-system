@@ -22,9 +22,9 @@ public:
     /**
      * @brief Constructs a SumoIntegration object.
      * @param sumo_config The path to a SUMO config file (.sumocfg).
-     * @param bypassConfigCheck If true, bypasses the filesystem configuration checks (for testing/mocking).
+     * @param bypass_config_check If true, bypasses the filesystem configuration checks (for testing/mocking).
      */
-    explicit SumoIntegration(std::string sumo_config, bool bypassConfigCheck = false);
+    explicit SumoIntegration(std::string sumo_config, bool bypass_config_check = false);
 
     virtual ~SumoIntegration() = default;
 
