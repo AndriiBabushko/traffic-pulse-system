@@ -10,6 +10,8 @@
 
 #include "core/SumoIntegration.h"
 
+#include <core/PulseException.h>
+
 #include "constants/CMakeBinaryDir.h"
 
 SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypass_config_check)
@@ -20,16 +22,16 @@ SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypass_conf
         std::string expected_path = config_dir + sumo_config;
 
         if (!std::filesystem::exists(config_dir)) {
-            throw std::runtime_error(
+            throw PulseException(
                 "SUMO config directory not found! Expected at: " + config_dir +
-                "\nEnsure that the directory exists and is copied correctly."
+                "\nEnsure that the directory exists and is copied correctly.", PulseErrorCode::InvalidFilePath
             );
         }
 
         if (!std::filesystem::exists(expected_path)) {
-            throw std::runtime_error(
+            throw PulseException(
                 "SUMO config file not found! Expected at: " + expected_path +
-                "\nEnsure you have placed the correct file inside 'config/sumo/'."
+                "\nEnsure you have placed the correct file inside 'config/sumo/'.", PulseErrorCode::InvalidFilePath
             );
         }
 
@@ -44,7 +46,7 @@ SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypass_conf
 void SumoIntegration::startSimulation()
 {
     if (m_running) {
-        throw std::runtime_error("SUMO simulation already running.");
+        throw PulseException("SUMO simulation already running.", PulseErrorCode::AlreadyRunning);
     }
 
     std::cout << "[SumoIntegration] Starting libsumo with config: " << m_sumo_config << std::endl;
@@ -55,7 +57,7 @@ void SumoIntegration::startSimulation()
 
 void SumoIntegration::stepSimulation() const {
     if (!m_running) {
-        throw std::runtime_error("Cannot step simulation: SUMO not running.");
+        throw PulseException("Cannot step simulation: SUMO not running.", PulseErrorCode::NotRunning);
     }
     libsumo::Simulation::step();
 }
@@ -63,7 +65,7 @@ void SumoIntegration::stepSimulation() const {
 void SumoIntegration::stopSimulation()
 {
     if (!m_running) {
-        throw std::runtime_error("Cannot stop simulation: SUMO not running.");
+        throw PulseException("Cannot stop simulation: SUMO not running.", PulseErrorCode::NotRunning);
     }
     std::cout << "[SumoIntegration] Stopping libsumo simulation..." << std::endl;
     libsumo::Simulation::close();
@@ -77,14 +79,14 @@ bool SumoIntegration::isRunning() const {
 
 std::vector<std::string> SumoIntegration::getAllVehicles() const {
     if (!m_running) {
-        throw std::runtime_error("Cannot retrieve vehicles: SUMO not running.");
+        throw PulseException("Cannot retrieve vehicles: SUMO not running.", PulseErrorCode::NotRunning);
     }
     return libsumo::Vehicle::getIDList();
 }
 
 std::pair<double, double> SumoIntegration::getVehiclePosition(const std::string& vehicle_id) const {
     if (!m_running) {
-        throw std::runtime_error("Cannot retrieve position: SUMO not running.");
+        throw PulseException("Cannot retrieve position: SUMO not running.", PulseErrorCode::NotRunning);
     }
     auto pos = libsumo::Vehicle::getPosition(vehicle_id);
     return {pos.x, pos.y};
@@ -92,21 +94,21 @@ std::pair<double, double> SumoIntegration::getVehiclePosition(const std::string&
 
 std::vector<std::string> SumoIntegration::getAllTrafficLights() const {
     if (!m_running) {
-        throw std::runtime_error("Cannot retrieve traffic lights: SUMO not running.");
+        throw PulseException("Cannot retrieve traffic lights: SUMO not running.", PulseErrorCode::NotRunning);
     }
     return libsumo::TrafficLight::getIDList();
 }
 
 std::string SumoIntegration::getTrafficLightState(const std::string& tl_id) const {
     if (!m_running) {
-        throw std::runtime_error("Cannot retrieve traffic light state: SUMO not running.");
+        throw PulseException("Cannot retrieve traffic light state: SUMO not running.", PulseErrorCode::NotRunning);
     }
     return libsumo::TrafficLight::getRedYellowGreenState(tl_id);
 }
 
 void SumoIntegration::setTrafficLightState(const std::string& tl_id, const std::string& state) const {
     if (!m_running) {
-        throw std::runtime_error("Cannot set traffic light state: SUMO not running.");
+        throw PulseException("Cannot set traffic light state: SUMO not running.", PulseErrorCode::NotRunning);
     }
     libsumo::TrafficLight::setRedYellowGreenState(tl_id, state);
 }

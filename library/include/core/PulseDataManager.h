@@ -37,7 +37,7 @@ public:
     /**
      * @brief Adds a new intersection to the data manager.
      * @throws std::invalid_argument if intersection is null
-     * @throws std::runtime_error if an intersection with the same ID already exists
+     * @throws PulseException if an intersection with the same ID already exists
      */
     void addIntersection(std::unique_ptr<PulseIntersection> intersection);
 
@@ -51,7 +51,7 @@ public:
     /**
      * @brief Adds a new traffic light to the data manager.
      * @throws std::invalid_argument if traffic_light is null
-     * @throws std::runtime_error if a traffic light with the same ID already exists
+     * @throws PulseException if a traffic light with the same ID already exists
      */
     void addTrafficLight(std::unique_ptr<PulseTrafficLight> traffic_light);
 
@@ -65,7 +65,7 @@ public:
     /**
      * @brief Adds a new vehicle to the data manager.
      * @throws std::invalid_argument if vehicle is null
-     * @throws std::runtime_error if a vehicle with the same ID already exists
+     * @throws PulseException if a vehicle with the same ID already exists
      */
     void addVehicle(std::unique_ptr<PulseVehicle> vehicle);
 
@@ -118,11 +118,9 @@ public:
     PulseDataManager& operator=(const PulseDataManager&) = delete;
 
 private:
-    // Private constructor for singleton
     PulseDataManager() = default;
 
 private:
-    // Intersection, traffic light, and vehicle storage
     std::unordered_map<std::string, std::unique_ptr<PulseIntersection>> m_intersections;
     std::unordered_map<std::string, std::unique_ptr<PulseTrafficLight>> m_traffic_lights;
     std::unordered_map<std::string, std::unique_ptr<PulseVehicle>> m_vehicles;

@@ -7,7 +7,6 @@
 #include "core/PulseDataManager.h"
 #include "core/PulseTrafficAlgo.h"
 #include "core/PulseLoader.h"
-#include "core/Logger.h"
 #include "constants/SumoConfigPath.h"
 #include "constants/SumoNetPath.h"
 
@@ -17,7 +16,7 @@
 #include <sstream>
 #include <algorithm>
 
-TrafficSystem::TrafficSystem(double update_frequency)
+TrafficSystem::TrafficSystem(const double update_frequency)
     : m_data_manager(PulseDataManager::getInstance())
     , m_update_frequency(update_frequency)
 {
@@ -31,11 +30,13 @@ TrafficSystem::~TrafficSystem() {
     }
 }
 
-void TrafficSystem::attach(std::shared_ptr<IObserver> observer) {
-    m_observers.push_back(observer);
+void TrafficSystem::attach(const std::shared_ptr<IObserver> observer) {
+    if (std::ranges::find(m_observers, observer) == m_observers.end()) {
+        m_observers.push_back(observer);
+    }
 }
 
-void TrafficSystem::detach(std::shared_ptr<IObserver> observer) {
+void TrafficSystem::detach(const std::shared_ptr<IObserver> observer) {
     const auto it = std::ranges::remove(m_observers, observer).begin();
     m_observers.erase(it, m_observers.end());
 }

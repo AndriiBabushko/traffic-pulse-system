@@ -24,7 +24,7 @@ void PulseIntersection::addRoadConnection(int road_id, PulseIntersection* inters
     }
 
     if (m_connected_roads.contains(road_id)) {
-        throw std::runtime_error("Road connection with this ID already exists.");
+        throw PulseException("Road connection with this ID already exists.", PulseErrorCode::DuplicateEntity);
     }
 
     m_connected_roads.emplace(road_id, PulseRoadConnection(*intersection, traffic_light, distance));

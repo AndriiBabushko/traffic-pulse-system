@@ -6,6 +6,7 @@
 
 #include "types/GreenWaveCoridor.h"
 #include "types/PulseEntityType.h"
+#include "types/PulseErrorCode.h"
 #include "types/PulseEvent.h"
 #include "types/PulseEvents.h"
 #include "types/PulsePosition.h"

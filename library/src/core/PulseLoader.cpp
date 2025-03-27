@@ -7,6 +7,7 @@
 #include <iostream>
 #include <filesystem>
 #include <utility>
+#include <core/PulseException.h>
 
 #include "core/PulseDataManager.h"
 #include "entities/PulseIntersection.h"
@@ -51,19 +52,19 @@ void PulseLoader::loadNetworkData() const {
     m_subject.notify(start_event);
 
     if (!std::filesystem::exists(m_net_file_path)) {
-        throw std::runtime_error("[PulseLoader] Network file not found: " + m_net_file_path);
+        throw PulseException("[PulseLoader] Network file not found: " + m_net_file_path, PulseErrorCode::InvalidFilePath);
     }
     cout << "[PulseLoader] LOADING_START: Parsing network file: " << m_net_file_path << endl;
 
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(m_net_file_path.c_str());
     if (!result) {
-        throw std::runtime_error("Could not parse network file: " + m_net_file_path +
-                                 ", error: " + result.description());
+        throw PulseException("Could not parse network file: " + m_net_file_path +
+                                 ", error: " + result.description(), PulseErrorCode::ParsingError);
     }
     pugi::xml_node net_node = doc.child("net");
     if (!net_node) {
-        throw std::runtime_error("No <net> element found in network file.");
+        throw PulseException("No <net> element found in network file.", PulseErrorCode::ParsingError);
     }
 
     int total_junctions = count_children_if(net_node, "junction", [](pugi::xml_node){return true;});
@@ -108,7 +109,7 @@ void PulseLoader::loadNetworkData() const {
         notify_progress("Parsing junction: " + j_id);
     }
     if (!found_any_junction) {
-        throw std::runtime_error("No <junction> element found in network file.");
+        throw PulseException("No <junction> element found in network file.", PulseErrorCode::ParsingError);
     }
 
     // ============ PHASE 2: TRAFFIC LIGHTS ============

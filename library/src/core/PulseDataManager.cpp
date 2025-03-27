@@ -7,6 +7,8 @@
 
 #include "core/PulseDataManager.h"
 
+#include <core/PulseException.h>
+
 PulseDataManager& PulseDataManager::getInstance()
 {
     static PulseDataManager instance;
@@ -21,8 +23,9 @@ void PulseDataManager::addIntersection(std::unique_ptr<PulseIntersection> inters
 
     const std::string& id = intersection->getId();
     if (m_intersections.contains(id)) {
-        throw std::runtime_error("Intersection with this ID already exists: " + id);
+        throw PulseException("Intersection with this ID already exists: " + id, PulseErrorCode::DuplicateEntity);
     }
+
     m_intersections[id] = std::move(intersection);
 }
 
@@ -40,8 +43,9 @@ void PulseDataManager::addTrafficLight(std::unique_ptr<PulseTrafficLight> traffi
 
     const std::string& id = traffic_light->getId();
     if (m_traffic_lights.contains(id)) {
-        throw std::runtime_error("Traffic light with this ID already exists: " + id);
+        throw PulseException("Traffic light with this ID already exists: " + id, PulseErrorCode::DuplicateEntity);
     }
+
     m_traffic_lights[id] = std::move(traffic_light);
 }
 
@@ -59,8 +63,9 @@ void PulseDataManager::addVehicle(std::unique_ptr<PulseVehicle> vehicle)
 
     const std::string& id = vehicle->getId();
     if (m_vehicles.contains(id)) {
-        throw std::runtime_error("Vehicle with this ID already exists: " + id);
+        throw PulseException("Vehicle with this ID already exists: " + id, PulseErrorCode::DuplicateEntity);
     }
+
     m_vehicles[id] = std::move(vehicle);
 }
 
