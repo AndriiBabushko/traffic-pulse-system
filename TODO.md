@@ -1,15 +1,15 @@
 # TODO
 
-> **Note on priorities**
-> - `( + )` = first priority
-> - `( ++ )` = second priority
-> - `( +++ )` = third priority
+> **Legend**
+> - `( + )` = highest priority (immediate)
+> - `( ++ )` = medium priority (short‐term)
+> - `( +++ )` = lower priority (long‐term)
 
 ---
 
 ## Research
 
-**Tasks:**
+**Tasks**
 - [X] ( + ) Find a way to publish the library
 - [X] ( + ) Find a way to test the project
 - [X] ( + ) Find a way to document the project
@@ -21,7 +21,7 @@
 
 ### Preparation
 
-**Requirements:**
+**Requirements**
 - CMake
 - Conan
 - GoogleTest
@@ -29,157 +29,143 @@
 - Doxygen
 - SUMO library
 
-**Tasks:**
+**Tasks**
 - [X] ( + ) Set up CTest and GoogleTest
-- [X] ( + ) Set up SUMO simulation and describe headers, classes, etc.
-- [ ] ( + ) Prepare scripts to:
-  - [X] ( + ) Run
-  - [X] ( + ) Build
-  - [ ] ( ++ ) Debug 
+- [X] ( + ) Set up SUMO simulation references (headers, classes, etc.)
+- [ ] ( + ) Prepare scripts for:
+  - [X] Build
+  - [X] Run
+  - [ ] ( ++ ) Debug
   - [X] ( ++ ) Test
-- [X] ( ++ ) Add a basic example to demonstrate the library usage
+- [X] ( ++ ) Provide a basic usage example for the library
 
 ### Implementation
 
-**Requirements:**
+**Requirements**
 - Observer & Singleton patterns
-- SOLID, KISS, DRY principles
-- SUMO simulation
-- Data storing and processing
-- Data visualization (console)
+- SOLID, KISS, DRY
+- SUMO simulation integration
+- Data storage & processing (PulseDataManager)
+- Console or minimal UI output
 
-**Tasks:**
-- [X] ( + ) Run SUMO simulation and collect some sample data
-- [ ] ( + ) Refactor basic classes and functions to handle simulation data
-- [ ] ( + ) Display the simulation data in the console
-- [ ] ( + ) Implement loading static data from SUMO files into data manager
-- [ ] ( + ) Implement Observer pattern to notify subscribers of changes
-  - [ ] ( + ) Type Observer notifications with PulseEvent
-- [ ] ( + ) Add tests for the core functionality
+**Tasks**
+- [X] ( + ) Implement basic simulation with SUMO; gather sample data
+- [ ] ( + ) Refactor core classes (PulseLoader, PulseTrafficAlgo, etc.) for clarity / maintainability
+- [ ] ( + ) **Implement PulseStatsCollector** – a new class that collects real‐time stats (vehicle counts, average queue lengths, etc.)
+  - [ ] ( + ) Integrate PulseStatsCollector into TrafficSystem’s run loop (or as an Observer)
+  - [ ] ( ++ ) Provide a simple query or data structure to display these stats externally
+- [ ] ( + ) Display simulation data in the console (minimal text output or logs)
+- [ ] ( + ) Use the Observer pattern to notify subscribers of changes (already started, might need final touches)
+  - [ ] ( + ) Ensure Observer notifications use typed PulseEvent (with `std::any` where needed)
+- [ ] ( + ) Expand or refine **green‐wave logic** in PulseTrafficAlgo
+  - [ ] ( ++ ) Possibly add multi‐corridor or advanced offset strategies
+  - [ ] ( ++ ) Support different “modes” (normal, night, emergency, etc.)
 
 ### Testing
 
-**Requirements:**
-- Unit tests
+**Requirements**
+- Unit tests for all library modules
 
-**Tasks:**
-- [X] ( + ) Set up the testing environment
-- [X] ( + ) Write simple test cases and run them locally
-- [X] ( + ) Integrate GitHub actions to run tests on each pull request
-- [ ] ( ++ ) Add more test cases to cover all possible scenarios
+**Tasks**
+- [X] ( + ) Set up the testing environment with GoogleTest
+- [X] ( + ) Write initial test cases (PulseLoader, PulseDataManager, TrafficSystem, etc.)
+- [X] ( + ) Integrate GitHub Actions for continuous testing on PR
+- [ ] ( ++ ) Add more coverage: edge cases in PulseTrafficAlgo, PulseStatsCollector, etc.
 
 ### Documentation
 
-**Requirements:**
-- Doxygen
-- GitHub Pages
+**Requirements**
+- Doxygen, README, possible GitHub Pages
 
-**Tasks:**
-- [X] ( + ) Set up Doxygen to generate documentation
-- [X] ( + ) Generate documentation for classes, functions, etc.
-- [ ] ( ++ ) Update `README.md`
-- [ ] ( ++ ) Update `CHANGELOG.md`
-- [ ] ( ++ ) Update `CONTRIBUTING.md`
-- [X] ( ++ ) Set up GitHub Pages to display documentation
-- [X] ( ++ ) Make the documentation easily accessible in the GitHub repo
+**Tasks**
+- [X] ( + ) Set up Doxygen generation
+- [X] ( + ) Generate docs for classes/functions
+- [ ] ( ++ ) Update `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md`
+- [X] ( ++ ) Use GitHub Pages to host documentation
 
 ### Library Publishing
 
-**Requirements:**
-- Artifactory Pro / Personal Conan Server
-- [Conan Center Index](https://github.com/conan-io/conan-center-index)
-- GitHub Actions
+**Requirements**
+- Artifactory Pro or personal Conan server (optional)
+- GitHub Actions or alternative CI/CD
 
-**Tasks:**
-- [ ] ( + ) Add usage examples
-- [ ] ( + ) Add tests
-- [ ] ( +++ ) Publish the library
+**Tasks**
+- [ ] ( +++ ) Publish the library to a package manager (Conan/Artifactory)
 - [ ] ( +++ ) Automate the publishing process
 
 ### Future Improvements
 
-**Tasks:**
-- [ ] ( ++ ) Implement strict and lenient modes for data processing, e.g. Strict mode: Throw an error if a traffic light is missing. Lenient mode: Create a default traffic light and log a warning.
+**Tasks**
+- [ ] ( ++ ) **Strict vs. Lenient** loading modes (throw on missing traffic lights, or auto‐create them with a warning)
+- [ ] ( ++ ) Add an **AnomalyDetector** to detect jams or suspicious flow patterns
+- [ ] ( +++ ) More traffic light “modes” (rush hour, weekend, night) beyond standard green wave
+- [ ] ( +++ ) Role‐based access (operator, admin, analyst)
 
 ---
 
-## Traffic Pulse System
+## Traffic Pulse System (Application)
 
 ### Preparation
 
-**Requirements:**
+**Requirements**
 - CMake
-- Qt
+- Qt (for UI)
 - MySQL
 - Docker
 - Traffic Pulse Library
 
-**Tasks:**
-- [ ] ( + ) Set up the project structure
-- [ ] ( + ) Set up a database to store traffic data and statistics
-- [ ] ( + ) Write basic tests to cover main functionality
+**Tasks**
+- [ ] ( + ) Set up project structure
+- [ ] ( + ) Configure a database to store traffic data & stats
+- [ ] ( + ) Write basic UI or console to test library usage
 
 ### Features & Implementation
 
-**Tasks:**
-- [ ] ( + ) **Interactive display of intersections and traffic lights**
-    - [ ] Draw a dynamic map with highlighted traffic lights
-    - [ ] Show current phases (red/green/yellow) in real time
-- [ ] ( + ) **Display statistical data as graphs and tables**
-    - [ ] Plot histograms/line charts for traffic intensity
-    - [ ] Show detailed tables with sorting capabilities
-- [ ] ( + ) **Automatic traffic light phase adjustments based on an algorithm**
-    - [ ] Integrate the “Green Wave” logic as a graph model
-    - [ ] Configure switching times while considering priority lanes
-- [ ] ( + ) **Support priority for emergency vehicles**
-    - [ ] Define a protocol for signals (ambulance, fire trucks, etc.)
-    - [ ] Trigger “Green Wave” automatically when an emergency signal is detected
-
-- [ ] ( ++ ) **Change traffic light modes without operator intervention**
-    - [ ] Dynamically recalculate cycles based on time of day/season
-    - [ ] Log all automatic adjustments
-- [ ] ( ++ ) **Identify the most congested intersections in real time**
-    - [ ] Compare traffic volumes among different intersections
-    - [ ] Automatically mark high-problem areas
-- [ ] ( ++ ) **Detect traffic jams and anomalies in the flow**
-    - [ ] Analyze flow speed to detect bottlenecks
-    - [ ] Send alerts about critical congestion levels
-- [ ] ( ++ ) **Role-based access control (operators, admins, analysts)**
-    - [ ] Develop a system of user roles and access rights
-    - [ ] Log and audit user actions
-
-- [ ] ( +++ ) **View the history of changes in the traffic light system**
-    - [ ] Store historical data of traffic light configurations
-    - [ ] Provide tools to see who changed configurations and when
+**Tasks**
+- [ ] ( + ) **Interactive display** of intersections & traffic lights
+  - [ ] Draw a dynamic map with color-coded lights
+  - [ ] Show current phases (red/green/yellow) in real time
+- [ ] ( + ) **Display statistics** (graphs & tables) – hooking into PulseStatsCollector data
+- [ ] ( + ) **Automatic phase adjustments** (Green Wave) – refine or expand current logic
+- [ ] ( + ) **Priority for emergency vehicles**
+  - [ ] Detect emergency signals, override normal schedule
+- [ ] ( ++ ) **Change traffic light modes automatically**
+  - [ ] E.g., night mode, rush hour mode, etc.
+- [ ] ( ++ ) **Identify the most congested intersections** in real time
+- [ ] ( ++ ) **Detect traffic jams & anomalies**
+- [ ] ( ++ ) **Role‐based access** (operator / admin / analyst)
 
 ### Testing
 
-**Requirements:**
-- Testing framework (GoogleTest)
-- Docker-based Continuous Integration
-
-**Tasks:**
-- [ ] ( + ) Verify “Green Wave” logic correctness
-- [ ] ( + ) Test system behavior under maximum load
-- [ ] ( ++ ) Cover emergency vehicle priority scenarios
+**Tasks**
+- [ ] ( + ) Test “Green Wave” logic with known scenarios
+- [ ] ( + ) Stress test with many roads & intersections
+- [ ] ( ++ ) Validate emergency vehicle priority
 
 ### Documentation
 
-**Requirements:**
-- Doxygen (for core C++ logic)
-- UI documentation for Qt/QML
-
-**Tasks:**
-- [ ] ( + ) Document the core logic of the Traffic Pulse system
-- [ ] ( ++ ) Extend the documentation with more classes and functions
-- [ ] ( ++ ) Add sequence/UML diagrams for main components
-- [ ] ( ++ ) Include screenshots or short videos for UI demonstration
+**Tasks**
+- [ ] ( + ) Document the core logic (architectural overview)
+- [ ] ( ++ ) Add UML diagrams for intersection flow, jam detection, etc.
+- [ ] ( ++ ) Possibly add screenshots or short UI screencast
 
 ### Deployment & Maintenance
 
-**Tasks:**
-- [ ] ( ++ ) Set up Docker containers for the database and the Traffic Pulse service
-- [ ] ( ++ ) Test cross-platform compatibility (Linux, macOS)
-- [ ] ( +++ ) Automate SUMO files generation:
-    - [ ] ( +++ ) Host the generation tool on the server and download it using Makefile command.
-    - [ ] ( +++ ) Make command more customizable for passing parameters to generate different scenarios.
+**Tasks**
+- [ ] ( ++ ) Docker for DB + Traffic Pulse service
+- [ ] ( ++ ) Cross‐platform testing (Linux, macOS)
+- [ ] ( +++ ) Automated SUMO file generation for varied test scenarios
+
+---
+
+## Implementation Order
+
+1. **Refactor & Basic Observers** (Library)
+2. **PulseStatsCollector** (+)
+3. **Green‐Wave Enhancements**
+4. **Emergency Priority**
+5. **UI & Visualization**
+6. **Congestion & Anomaly Detection** (++)
+7. **Role‐Based Access** (++)
+8. **Strict vs. Lenient Loading** (++)
+9. **Publish** (+++)  
