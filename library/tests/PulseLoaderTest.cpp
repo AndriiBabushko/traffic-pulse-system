@@ -19,7 +19,7 @@ TEST(PulseLoaderTest, LoaderFillsDataManager) {
         GTEST_SKIP() << "Test network file does not exist: " << expected_path;
     }
 
-    PulseLoader loader(manager, expected_path);
+    PulseLoader loader(manager, expected_path, this);
     ASSERT_NO_THROW(loader.loadNetworkData());
 
     auto intersections = manager.getAllIntersections();

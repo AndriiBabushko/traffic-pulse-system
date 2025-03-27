@@ -5,7 +5,7 @@
 #include "core/PulseTrafficAlgo.h"
 #include "entities/PulseIntersection.h"
 #include "entities/PulseTrafficLight.h"
-#include <queue>
+#include "utils/BFSUtils.h"
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -34,45 +34,37 @@ std::vector<GreenWaveCorridor> PulseTrafficAlgo::findMainCorridors() const
     auto intersections = m_data_manager.getAllIntersections();
     if (intersections.empty()) return results;
 
-    // Build a list of intersection IDs and sort them for deterministic order.
     std::vector<std::string> sorted_ids;
-    for (auto* inter : intersections) {
+    sorted_ids.reserve(intersections.size());
+    for (const auto* inter : intersections) {
         sorted_ids.push_back(inter->getId());
     }
     std::ranges::sort(sorted_ids);
-
-    // Use the first intersection (lexicographically smallest) as the root.
-    const std::string root_id = sorted_ids.front();
-
-    // BFS starting from the sorted root.
-    std::unordered_map<std::string, bool> visited;
-    std::queue<std::string> q;
-    q.push(root_id);
-    visited[root_id] = true;
-
-    std::vector<std::string> corridor_ids;
-    while (!q.empty()) {
-        std::string current_id = q.front();
-        const auto* current_inter = m_data_manager.getIntersection(current_id);
-        q.pop();
-        corridor_ids.push_back(current_id);
-
-        if (!current_inter) continue;
-
-        for (const auto& [road_id, road_connection] : current_inter->getConnectedRoads()) {
-            std::string neighbor_id = road_connection.getConnectedIntersection().getId();
-
-            if (!visited[neighbor_id]) {
-                visited[neighbor_id] = true;
-                q.push(neighbor_id);
-            }
-        }
+    if (sorted_ids.empty()) {
+        return results;
     }
 
-    if (!corridor_ids.empty()) {
+    // Use the lexicographically smallest intersection as the BFS root
+    const std::string& root_id = sorted_ids.front();
+
+    const auto visited_order = runBFS(root_id, [&](const std::string& node_id) {
+        std::vector<std::string> neighbor_ids;
+        const auto* current_inter = m_data_manager.getIntersection(node_id);
+        if (!current_inter) {
+            return neighbor_ids;
+        }
+
+        // For each road connection, collect neighbor intersection IDs
+        for (auto& [road_id, road_conn] : current_inter->getConnectedRoads()) {
+            neighbor_ids.push_back(road_conn.getConnectedIntersection().getId());
+        }
+        return neighbor_ids;
+    });
+
+    if (!visited_order.empty()) {
         GreenWaveCorridor corridor;
-        corridor.intersection_ids = corridor_ids;
-        corridor.target_speed_m_s = 13.9; // ~50 km/h
+        corridor.intersection_ids = visited_order;
+        corridor.target_speed_m_s = 13.9;
         results.push_back(corridor);
     }
     return results;
