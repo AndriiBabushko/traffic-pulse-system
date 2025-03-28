@@ -1,45 +1,32 @@
 //
 // Created by andrii on 3/20/25.
 //
-#include "core/PulseLoader.h"
 #include <pugixml.hpp>
-#include <stdexcept>
 #include <iostream>
 #include <filesystem>
 #include <utility>
-#include <core/PulseException.h>
 
+#include <core/PulseException.h>
+#include "core/PulseLoader.h"
 #include "core/PulseDataManager.h"
+
 #include "entities/PulseIntersection.h"
 #include "entities/PulseTrafficLight.h"
+
 #include "types/PulsePosition.h"
 #include "types/PulseEvent.h"
 
+#include "utils/XMLUtils.h"
+
 namespace {
     int g_next_road_id = 1;
-}
-
-// TODO: refactor this into a separate utility class
-/**
- * @brief Helper to count the number of child nodes that match a certain predicate.
- */
-template <typename Pred>
-static int count_children_if(const pugi::xml_node& parent, const char* child_name, Pred pred) {
-    int count = 0;
-    for (auto node : parent.children(child_name)) {
-        if (pred(node)) {
-            count++;
-        }
-    }
-    return count;
 }
 
 PulseLoader::PulseLoader(PulseDataManager& data_manager, std::string net_file, ISubject& subject)
     : m_data_manager(data_manager)
     , m_net_file_path(std::move(net_file))
     , m_subject(subject)
-{
-}
+{}
 
 void PulseLoader::loadNetworkData() const {
     using namespace std;

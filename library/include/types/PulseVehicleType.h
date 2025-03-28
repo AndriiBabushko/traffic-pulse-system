@@ -19,6 +19,7 @@ enum class PulseVehicleType {
     E_SCOOTER,  ///< Electric scooter.
     BICYCLE,    ///< Bicycle.
     PEDESTRIAN, ///< Pedestrian.
+    EMERGENCY,  ///< Emergency vehicle.
 };
 
 #endif //PULSEVEHICLETYPE_H

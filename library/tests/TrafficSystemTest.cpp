@@ -26,7 +26,7 @@ private:
     std::mutex m_mutex;
 };
 
-TEST(RealSimulationTest, CheckLoadingAndSimulationEvents) {
+TEST(TrafficSystem, CheckLoadingAndSimulationEvents) {
     TrafficSystem traffic_system(5.0);
     auto observer = std::make_shared<TestObserver>();
     traffic_system.attach(observer);
@@ -73,12 +73,11 @@ TEST(RealSimulationTest, CheckLoadingAndSimulationEvents) {
             break;
         case PulseEvents::LOADING_PROGRESS:
             found_loading_progress = true;
-            // If you want to check progress data:
             if (ev.data.has_value()) {
                 if (ev.data.type() == typeid(float)) {
-                    float progress = std::any_cast<float>(ev.data);
-                    // TODO:
-                    // e.g. EXPECT_GE(progress, 0.0f);
+                    const auto progress = std::any_cast<float>(ev.data);
+                    EXPECT_GE(progress, 0.0f);
+                    EXPECT_LE(progress, 1.0f);
                 }
             }
             break;

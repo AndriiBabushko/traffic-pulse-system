@@ -26,8 +26,10 @@ public:
     PulseLoader(PulseDataManager& data_manager, std::string net_file, ISubject& subject);
 
     /**
-     * @brief Parses the network file and populates PulseDataManager.
-     *        Notifies the subject about loading progress at each step.
+     * @brief Loads network data from the specified .net.xml file into the PulseDataManager.
+     *        Notifies LOADING_START, LOADING_PROGRESS, LOADING_COMPLETE events during the process.
+     *
+     * @throws PulseException if the file is missing or invalid (e.g. parsing error).
      */
     void loadNetworkData() const;
 

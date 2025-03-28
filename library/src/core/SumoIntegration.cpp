@@ -4,14 +4,11 @@
 
 #include <libsumo/libsumo.h>
 #include <iostream>
-#include <stdexcept>
 #include <filesystem>
 #include <utility>
 
 #include "core/SumoIntegration.h"
-
 #include <core/PulseException.h>
-
 #include "constants/CMakeBinaryDir.h"
 
 SumoIntegration::SumoIntegration(std::string sumo_config, const bool bypass_config_check)
@@ -111,4 +108,23 @@ void SumoIntegration::setTrafficLightState(const std::string& tl_id, const std::
         throw PulseException("Cannot set traffic light state: SUMO not running.", PulseErrorCode::NotRunning);
     }
     libsumo::TrafficLight::setRedYellowGreenState(tl_id, state);
+}
+
+
+std::string SumoIntegration::getVehicleType(const std::string& vehicle_id) const
+{
+    if (!m_running) {
+        throw PulseException("Cannot get vehicle type, SUMO not running.",
+                             PulseErrorCode::NotRunning);
+    }
+
+    try {
+        // Example if libsumo has: libsumo::Vehicle::getTypeID(vehicle_id)
+        // This returns e.g. "passenger", "truck", "bicycle", "emergency", etc.
+        return libsumo::Vehicle::getTypeID(vehicle_id);
+    }
+    catch (const std::exception& ex) {
+        throw PulseException(std::string("SumoIntegration::getVehicleType error: ") + ex.what(),
+                             PulseErrorCode::ParsingError);
+    }
 }

@@ -6,8 +6,8 @@
 #include <unordered_set>
 
 #include "core/PulseDataManager.h"
-
 #include <core/PulseException.h>
+#include <utils/SumoUtils.h>
 
 PulseDataManager& PulseDataManager::getInstance()
 {
@@ -131,13 +131,19 @@ void PulseDataManager::syncFromSumo(const SumoIntegration &sumo)
     }
 
     // 3) Load vehicles
-    auto vehicle_ids = sumo.getAllVehicles();
-    for (const auto& veh_id : vehicle_ids) {
+    for (auto vehicle_ids = sumo.getAllVehicles(); const auto& veh_id : vehicle_ids) {
         auto [x, y] = sumo.getVehiclePosition(veh_id);
+
+        std::string sumo_type_str = sumo.getVehicleType(veh_id);
+        std::string sumo_role_str = sumo_type_str;
+
+        PulseVehicleType vehicle_type = deduceVehicleTypeFromSumo(sumo_type_str);
+        PulseVehicleRole vehicle_role = deduceVehicleRoleFromSumo(sumo_role_str);
+
         auto new_vehicle = std::make_unique<PulseVehicle>(
             veh_id,
-            PulseVehicleType::CAR,       // TODO: could refine from SUMO data if desired
-            PulseVehicleRole::NORMAL,    // TODO: likewise
+            vehicle_type,
+            vehicle_role,
             PulsePosition{x, y}
         );
         addVehicle(std::move(new_vehicle));
@@ -163,15 +169,23 @@ void PulseDataManager::updateFromSumo(const SumoIntegration &sumo)
 
     // Add new vehicles from SUMO
     for (const auto& veh_id : sumo_vehicle_ids) {
-        if (!m_vehicles.count(veh_id)) {
+        if (!m_vehicles.contains(veh_id)) {
             auto [x, y] = sumo.getVehiclePosition(veh_id);
-            auto new_veh = std::make_unique<PulseVehicle>(
+
+            std::string sumo_type_str = sumo.getVehicleType(veh_id);
+            std::string sumo_role_str = sumo_type_str;
+
+            PulseVehicleType vehicle_type = deduceVehicleTypeFromSumo(sumo_type_str);
+            PulseVehicleRole vehicle_role = deduceVehicleRoleFromSumo(sumo_role_str);
+
+            auto new_vehicle = std::make_unique<PulseVehicle>(
                 veh_id,
-                PulseVehicleType::CAR,       // TODO: could refine from SUMO data if desired
-                PulseVehicleRole::NORMAL,    // TODO: likewise
+                vehicle_type,
+                vehicle_role,
                 PulsePosition{x, y}
             );
-            m_vehicles[veh_id] = std::move(new_veh);
+
+            m_vehicles[veh_id] = std::move(new_vehicle);
         }
     }
 

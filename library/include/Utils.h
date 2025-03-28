@@ -5,3 +5,5 @@
 #pragma once
 
 #include "utils/BFSUtils.h"
+#include "utils/XMLUtils.h"
+#include "utils/SumoUtils.h"

@@ -76,6 +76,13 @@ public:
      */
     virtual void setTrafficLightState(const std::string& tl_id, const std::string& state) const;
 
+    /**
+     * @brief Retrieves the "type" string of a vehicle from SUMO (e.g., "passenger", "truck", "emergency").
+     * @param vehicle_id The ID of the vehicle in SUMO.
+     * @return A string describing the vehicle type.
+     * @throws PulseException if SUMO is not running or if there's an underlying SUMO error.
+     */
+    [[nodiscard]] virtual std::string getVehicleType(const std::string& vehicle_id) const;
 protected:
     std::string m_sumo_config; ///< Path to the SUMO configuration file.
     bool m_running;            ///< Whether the simulation is running.

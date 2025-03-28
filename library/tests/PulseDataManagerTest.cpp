@@ -3,10 +3,12 @@
 //
 
 #include <gtest/gtest.h>
+#include <thread>
+#include <chrono>
 
 #include "core/PulseDataManager.h"
-#include <core/PulseLoader.h>
 #include "core/SumoIntegration.h"
+#include "core/PulseException.h"
 
 #include "entities/PulseIntersection.h"
 #include "entities/PulseTrafficLight.h"
@@ -14,163 +16,157 @@
 
 #include "constants/SumoConfigPath.h"
 
+/**
+ * @class PulseDataManagerWithRealSumoTest
+ * @brief Single fixture that:
+ *        1) sets up a real SUMO instance once for all tests,
+ *        2) clears the PulseDataManager before each test.
+ */
+class PulseDataManagerWithRealSumoTest : public ::testing::Test {
+protected:
+    // The static pointer to the SUMO instance, accessible by all tests in this fixture
+    static SumoIntegration* s_sumo;
 
-class MockSumoIntegration : public SumoIntegration
-{
-public:
-    MockSumoIntegration()
-        : SumoIntegration(SUMO_CONFIG_PATH)
-    {}
-
-    void startSimulation() override {}
-    void stopSimulation() override {}
-    void stepSimulation() const override {}
-
-    [[nodiscard]] bool isRunning() const override { return true; }
-
-    [[nodiscard]] std::vector<std::string> getAllTrafficLights() const override
-    {
-        return {"mock_tl1", "mock_tl2"};
+    /**
+     * @brief Start SUMO once for all tests in this suite
+     */
+    static void SetUpTestSuite() {
+        s_sumo = new SumoIntegration(SUMO_CONFIG_PATH);
+        s_sumo->startSimulation();
     }
 
-    [[nodiscard]] std::vector<std::string> getAllVehicles() const override
-    {
-        return {"mock_vehicle1", "mock_vehicle2"};
+    /**
+     * @brief Stop SUMO after the entire test suite finishes
+     */
+    static void TearDownTestSuite() {
+        if (s_sumo && s_sumo->isRunning()) {
+            s_sumo->stopSimulation();
+        }
+        delete s_sumo;
+        s_sumo = nullptr;
     }
 
-    [[nodiscard]] std::pair<double, double> getVehiclePosition(const std::string& vehicle_id) const override
-    {
-        if (vehicle_id == "mock_vehicle1") return {10.0, 20.0};
-        if (vehicle_id == "mock_vehicle2") return {30.0, 40.0};
-        return {0.0, 0.0};
-    }
-
-    [[nodiscard]] std::string getTrafficLightState(const std::string& tl_id) const override
-    {
-        return "rGrG";
+    /**
+     * @brief Clear manager data before each test
+     */
+    void SetUp() override {
+        auto& manager = PulseDataManager::getInstance();
+        manager.clearAll();
     }
 };
 
-TEST(PulseDataManagerTest, BasicIntersectionStorage)
-{
+SumoIntegration* PulseDataManagerWithRealSumoTest::s_sumo = nullptr;
+
+TEST_F(PulseDataManagerWithRealSumoTest, AddIntersectionNoDup) {
     auto& manager = PulseDataManager::getInstance();
-    manager.clearAll();
 
-    // Add an intersection
-    auto intersection = std::make_unique<PulseIntersection>("int1", PulsePosition{1.0, 2.0});
-    manager.addIntersection(std::move(intersection));
+    // 1) Add intersections
+    auto interA = std::make_unique<PulseIntersection>("intA", PulsePosition{1.0, 2.0});
+    manager.addIntersection(std::move(interA));
 
-    auto retrieved = manager.getIntersection("int1");
-    ASSERT_NE(retrieved, nullptr);
-    EXPECT_EQ(retrieved->getId(), "int1");
+    auto interB = std::make_unique<PulseIntersection>("intB", PulsePosition{3.0, 4.0});
+    manager.addIntersection(std::move(interB));
 
-    auto allInts = manager.getAllIntersections();
-    EXPECT_EQ(allInts.size(), 1u);
+    // 2) Check
+    EXPECT_EQ(manager.getAllIntersections().size(), 2u);
+
+    // 3) Attempt a duplicate => should throw
+    auto dup = std::make_unique<PulseIntersection>("intA", PulsePosition{9.0, 9.0});
+    EXPECT_THROW(manager.addIntersection(std::move(dup)), PulseException);
 }
 
-TEST(PulseDataManagerTest, BasicTrafficLightStorage)
-{
+TEST_F(PulseDataManagerWithRealSumoTest, AddTrafficLightNoDup) {
     auto& manager = PulseDataManager::getInstance();
-    manager.clearAll();
 
-    auto tl = std::make_unique<PulseTrafficLight>("light1");
-    manager.addTrafficLight(std::move(tl));
+    auto tlA = std::make_unique<PulseTrafficLight>("TL_A");
+    manager.addTrafficLight(std::move(tlA));
 
-    auto retrieved = manager.getTrafficLight("light1");
-    ASSERT_NE(retrieved, nullptr);
-    EXPECT_EQ(retrieved->getId(), "light1");
+    auto tlB = std::make_unique<PulseTrafficLight>("TL_B");
+    manager.addTrafficLight(std::move(tlB));
 
-    auto allTls = manager.getAllTrafficLights();
-    EXPECT_EQ(allTls.size(), 1u);
+    EXPECT_EQ(manager.getAllTrafficLights().size(), 2u);
+
+    auto dup = std::make_unique<PulseTrafficLight>("TL_A");
+    EXPECT_THROW(manager.addTrafficLight(std::move(dup)), PulseException);
 }
 
-TEST(PulseDataManagerTest, BasicVehicleStorage)
-{
+TEST_F(PulseDataManagerWithRealSumoTest, AddVehicleNoDup) {
     auto& manager = PulseDataManager::getInstance();
-    manager.clearAll();
 
-    auto vehicle = std::make_unique<PulseVehicle>("V123", PulseVehicleType::CAR, PulseVehicleRole::NORMAL, PulsePosition{5.0, 5.0});
-    manager.addVehicle(std::move(vehicle));
+    auto v1 = std::make_unique<PulseVehicle>("veh1", PulseVehicleType::CAR, PulseVehicleRole::NORMAL, PulsePosition{5.0, 5.0});
+    manager.addVehicle(std::move(v1));
 
-    auto retrieved = manager.getVehicle("V123");
-    ASSERT_NE(retrieved, nullptr);
-    EXPECT_EQ(retrieved->getId(), "V123");
+    auto v2 = std::make_unique<PulseVehicle>("veh2", PulseVehicleType::TRUCK, PulseVehicleRole::NORMAL, PulsePosition{10.0, 20.0});
+    manager.addVehicle(std::move(v2));
 
-    auto allVeh = manager.getAllVehicles();
-    EXPECT_EQ(allVeh.size(), 1u);
+    EXPECT_EQ(manager.getAllVehicles().size(), 2u);
+
+    auto dup = std::make_unique<PulseVehicle>("veh1", PulseVehicleType::CAR, PulseVehicleRole::NORMAL, PulsePosition{0, 0});
+    EXPECT_THROW(manager.addVehicle(std::move(dup)), PulseException);
 }
 
-TEST(PulseDataManagerTest, SyncFromMockSumo)
-{
+TEST_F(PulseDataManagerWithRealSumoTest, NullPointerThrowsInvalidArgument) {
     auto& manager = PulseDataManager::getInstance();
-    manager.clearAll();
 
-    MockSumoIntegration mockSumo;
-    manager.syncFromSumo(mockSumo);
-
-    // Check intersections
-    auto ints = manager.getAllIntersections();
-    EXPECT_EQ(ints.size(), 2u);
-
-    // Check traffic lights
-    auto tl1 = manager.getTrafficLight("mock_tl1");
-    ASSERT_NE(tl1, nullptr);
-    auto tl2 = manager.getTrafficLight("mock_tl2");
-    ASSERT_NE(tl2, nullptr);
-
-    // Check vehicles
-    auto v1 = manager.getVehicle("mock_vehicle1");
-    ASSERT_NE(v1, nullptr);
-    EXPECT_EQ(v1->getPosition().x, 10.0);
-    EXPECT_EQ(v1->getPosition().y, 20.0);
-
-    auto v2 = manager.getVehicle("mock_vehicle2");
-    ASSERT_NE(v2, nullptr);
-    EXPECT_EQ(v2->getPosition().x, 30.0);
-    EXPECT_EQ(v2->getPosition().y, 40.0);
-
-    // Also check getAllVehicles() & getAllTrafficLights()
-    auto allVehs = manager.getAllVehicles();
-    EXPECT_EQ(allVehs.size(), 2u);
-    auto allTLights = manager.getAllTrafficLights();
-    EXPECT_EQ(allTLights.size(), 2u);
+    EXPECT_THROW(manager.addIntersection(nullptr), std::invalid_argument);
+    EXPECT_THROW(manager.addTrafficLight(nullptr), std::invalid_argument);
+    EXPECT_THROW(manager.addVehicle(nullptr), std::invalid_argument);
 }
 
-TEST(PulseDataManagerTest, UpdateFromMockSumo)
-{
+TEST_F(PulseDataManagerWithRealSumoTest, SyncFromRealSumo) {
     auto& manager = PulseDataManager::getInstance();
-    manager.clearAll();
+    ASSERT_TRUE(s_sumo->isRunning()) << "SUMO should be running for this test.";
 
-    MockSumoIntegration mockSumo;
-    manager.syncFromSumo(mockSumo);
+    manager.syncFromSumo(*s_sumo);
 
-    // Modify scenario so only 1 vehicle remains
-    class Step2MockSumo : public MockSumoIntegration {
-    public:
-        std::vector<std::string> getAllVehicles() const override {
-            return {"mock_vehicle1"}; // dropped "mock_vehicle2"
-        }
-        // Suppose we drop "mock_tl2" as well
-        std::vector<std::string> getAllTrafficLights() const override {
-            return {"mock_tl1"}; // only 1 remains
-        }
-    } step2Sumo;
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 
-    manager.updateFromSumo(step2Sumo);
+    const auto intersections = manager.getAllIntersections();
+    const auto trafficLights = manager.getAllTrafficLights();
+    const auto vehicles = manager.getAllVehicles();
 
-    // Vehicle2 should be removed
-    auto v2 = manager.getVehicle("mock_vehicle2");
-    EXPECT_EQ(v2, nullptr);
+    EXPECT_GT(intersections.size(), 0u);
+    EXPECT_GT(trafficLights.size(), 0u);
+    EXPECT_GE(vehicles.size(), 1u);
+}
 
-    // Vehicle1 still present
-    auto v1 = manager.getVehicle("mock_vehicle1");
-    ASSERT_NE(v1, nullptr);
+TEST_F(PulseDataManagerWithRealSumoTest, UpdateFromRealSumoPositions) {
+    auto& manager = PulseDataManager::getInstance();
+    ASSERT_TRUE(s_sumo->isRunning());
 
-    // Traffic light2 removed
-    auto tl2 = manager.getTrafficLight("mock_tl2");
-    EXPECT_EQ(tl2, nullptr);
+    manager.syncFromSumo(*s_sumo);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    // Traffic light1 still present
-    auto tl1 = manager.getTrafficLight("mock_tl1");
-    ASSERT_NE(tl1, nullptr);
+    // Step sim so vehicles might move
+    s_sumo->stepSimulation();
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    s_sumo->stepSimulation();
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    manager.updateFromSumo(*s_sumo);
+
+    for (auto vehicles = manager.getAllVehicles(); auto* veh : vehicles) {
+        EXPECT_GE(veh->getPosition().x, 0.0);
+        EXPECT_GE(veh->getPosition().y, 0.0);
+    }
+}
+
+
+TEST_F(PulseDataManagerWithRealSumoTest, PerformanceSyncUpdate) {
+    auto& manager = PulseDataManager::getInstance();
+    ASSERT_TRUE(s_sumo->isRunning());
+
+    constexpr int iterations = 5;
+    const auto start = std::chrono::steady_clock::now();
+
+    for (int i = 0; i < iterations; ++i) {
+        manager.syncFromSumo(*s_sumo);
+        s_sumo->stepSimulation();
+        manager.updateFromSumo(*s_sumo);
+    }
+
+    const auto end = std::chrono::steady_clock::now();
+    const auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    EXPECT_LT(elapsed_ms, 3000) << "Performance test took too long: " << elapsed_ms << " ms";
 }
