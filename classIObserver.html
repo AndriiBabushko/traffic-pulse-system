@@ -102,31 +102,22 @@ $(document).ready(function(){initNavTree('classIObserver.html',''); initResizabl
 </div><!--header-->
 <div class="contents">
 
-<p>Interface for objects that observe changes.  
+<p>Interface for observers that receive updates from a subject.  
  <a href="classIObserver.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="IObserver_8h_source.html">IObserver.h</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for IObserver:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classIObserver.png" usemap="#IObserver_map" alt=""/>
-  <map id="IObserver_map" name="IObserver_map">
-<area href="classLogger.html" title="A singleton logger that implements IObserver to log system events." alt="Logger" shape="rect" coords="0,56,69,80"/>
-  </map>
-</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2a784b27529ed6befbd52244cdaa6d9e" id="r_a2a784b27529ed6befbd52244cdaa6d9e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIObserver.html#a2a784b27529ed6befbd52244cdaa6d9e">update</a> (const std::string &amp;eventDescription)=0</td></tr>
-<tr class="memdesc:a2a784b27529ed6befbd52244cdaa6d9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the subject notifies observers.  <br /></td></tr>
-<tr class="separator:a2a784b27529ed6befbd52244cdaa6d9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e105dc0ed6297ba10b38a32cce9f279" id="r_a6e105dc0ed6297ba10b38a32cce9f279"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIObserver.html#a6e105dc0ed6297ba10b38a32cce9f279">update</a> (const <a class="el" href="structPulseEvent.html">PulseEvent</a> &amp;event)=0</td></tr>
+<tr class="memdesc:a6e105dc0ed6297ba10b38a32cce9f279"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the subject emits an event.  <br /></td></tr>
+<tr class="separator:a6e105dc0ed6297ba10b38a32cce9f279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Interface for objects that observe changes. </p>
+<div class="textblock"><p>Interface for observers that receive updates from a subject. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2a784b27529ed6befbd52244cdaa6d9e" name="a2a784b27529ed6befbd52244cdaa6d9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a784b27529ed6befbd52244cdaa6d9e">&#9670;&#160;</a></span>update()</h2>
+<a id="a6e105dc0ed6297ba10b38a32cce9f279" name="a6e105dc0ed6297ba10b38a32cce9f279"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e105dc0ed6297ba10b38a32cce9f279">&#9670;&#160;</a></span>update()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -137,8 +128,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void IObserver::update </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>eventDescription</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="structPulseEvent.html">PulseEvent</a> &amp;&#160;</td>
+          <td class="paramname"><em>event</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -149,15 +140,13 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Called when the subject notifies observers. </p>
+<p>Called when the subject emits an event. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">eventDescription</td><td>A string describing the event. </td></tr>
+    <tr><td class="paramname">event</td><td>The event data. </td></tr>
   </table>
   </dd>
 </dl>
-
-<p>Implemented in <a class="el" href="classLogger.html#a47263fa36200203644c5a66715a22fa0">Logger</a>.</p>
 
 </div>
 </div>

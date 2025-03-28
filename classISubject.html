@@ -118,20 +118,21 @@ Inheritance diagram for ISubject:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4f6d20c5e92b9b0a020e8661becf9ace" id="r_a4f6d20c5e92b9b0a020e8661becf9ace"><td class="memItemLeft" align="right" valign="top"><a id="a4f6d20c5e92b9b0a020e8661becf9ace" name="a4f6d20c5e92b9b0a020e8661becf9ace"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>attach</b> (std::shared_ptr&lt; <a class="el" href="classIObserver.html">IObserver</a> &gt; observer)=0</td></tr>
+<tr class="memitem:a4f6d20c5e92b9b0a020e8661becf9ace" id="r_a4f6d20c5e92b9b0a020e8661becf9ace"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISubject.html#a4f6d20c5e92b9b0a020e8661becf9ace">attach</a> (std::shared_ptr&lt; <a class="el" href="classIObserver.html">IObserver</a> &gt; observer)=0</td></tr>
+<tr class="memdesc:a4f6d20c5e92b9b0a020e8661becf9ace"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attach an observer to receive events.  <br /></td></tr>
 <tr class="separator:a4f6d20c5e92b9b0a020e8661becf9ace"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad2217012b14bdd6c91eb240689e5a74" id="r_aad2217012b14bdd6c91eb240689e5a74"><td class="memItemLeft" align="right" valign="top"><a id="aad2217012b14bdd6c91eb240689e5a74" name="aad2217012b14bdd6c91eb240689e5a74"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>detach</b> (std::shared_ptr&lt; <a class="el" href="classIObserver.html">IObserver</a> &gt; observer)=0</td></tr>
+<tr class="memitem:aad2217012b14bdd6c91eb240689e5a74" id="r_aad2217012b14bdd6c91eb240689e5a74"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISubject.html#aad2217012b14bdd6c91eb240689e5a74">detach</a> (std::shared_ptr&lt; <a class="el" href="classIObserver.html">IObserver</a> &gt; observer)=0</td></tr>
+<tr class="memdesc:aad2217012b14bdd6c91eb240689e5a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detach an observer so it no longer receives events.  <br /></td></tr>
 <tr class="separator:aad2217012b14bdd6c91eb240689e5a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71899a56c9379f2ed1c1939c0e205a9a" id="r_a71899a56c9379f2ed1c1939c0e205a9a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISubject.html#a71899a56c9379f2ed1c1939c0e205a9a">notify</a> (const std::string &amp;eventDescription)=0</td></tr>
-<tr class="separator:a71899a56c9379f2ed1c1939c0e205a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2fc83fe74220986520d72371c5443cc" id="r_ac2fc83fe74220986520d72371c5443cc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classISubject.html#ac2fc83fe74220986520d72371c5443cc">notify</a> (const <a class="el" href="structPulseEvent.html">PulseEvent</a> &amp;event)=0</td></tr>
+<tr class="memdesc:ac2fc83fe74220986520d72371c5443cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies all attached observers with a <a class="el" href="structPulseEvent.html">PulseEvent</a>.  <br /></td></tr>
+<tr class="separator:ac2fc83fe74220986520d72371c5443cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Interface for a subject that can be observed. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a71899a56c9379f2ed1c1939c0e205a9a" name="a71899a56c9379f2ed1c1939c0e205a9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71899a56c9379f2ed1c1939c0e205a9a">&#9670;&#160;</a></span>notify()</h2>
+<a id="a4f6d20c5e92b9b0a020e8661becf9ace" name="a4f6d20c5e92b9b0a020e8661becf9ace"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f6d20c5e92b9b0a020e8661becf9ace">&#9670;&#160;</a></span>attach()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -140,10 +141,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>detach</b> (s
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void ISubject::notify </td>
+          <td class="memname">virtual void ISubject::attach </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>eventDescription</em></td><td>)</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classIObserver.html">IObserver</a> &gt;&#160;</td>
+          <td class="paramname"><em>observer</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -154,7 +155,83 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>detach</b> (s
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classTrafficSystem.html#a99c5bb35650fb814be3cbfd4f2c515c6">TrafficSystem</a>.</p>
+<p>Attach an observer to receive events. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">observer</td><td>Shared pointer to the observer. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aad2217012b14bdd6c91eb240689e5a74" name="aad2217012b14bdd6c91eb240689e5a74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad2217012b14bdd6c91eb240689e5a74">&#9670;&#160;</a></span>detach()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void ISubject::detach </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classIObserver.html">IObserver</a> &gt;&#160;</td>
+          <td class="paramname"><em>observer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Detach an observer so it no longer receives events. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">observer</td><td>Shared pointer to the observer. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac2fc83fe74220986520d72371c5443cc" name="ac2fc83fe74220986520d72371c5443cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2fc83fe74220986520d72371c5443cc">&#9670;&#160;</a></span>notify()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void ISubject::notify </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structPulseEvent.html">PulseEvent</a> &amp;&#160;</td>
+          <td class="paramname"><em>event</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Notifies all attached observers with a <a class="el" href="structPulseEvent.html">PulseEvent</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td>The event that occurred. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classTrafficSystem.html#ad0d94485355c267d05fdd0fdd94ae2a0">TrafficSystem</a>.</p>
 
 </div>
 </div>

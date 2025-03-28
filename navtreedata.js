@@ -43,7 +43,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"CMakeBinaryDir_8h_source.html"
+"AnomalyDetector_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

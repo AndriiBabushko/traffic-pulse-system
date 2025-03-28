@@ -5,6 +5,8 @@ var dir_d44c64559bbebec7f509842c48db8b23 =
     [ "entities", "dir_4563ce166fd24a17a0623db1f3455956.html", "dir_4563ce166fd24a17a0623db1f3455956" ],
     [ "interfaces", "dir_b6a1b25c97174b03ee33ad89b32089b9.html", "dir_b6a1b25c97174b03ee33ad89b32089b9" ],
     [ "types", "dir_0ad255a918b7fba820a1ddafed6fa637.html", "dir_0ad255a918b7fba820a1ddafed6fa637" ],
+    [ "utils", "dir_821002d4f10779a80d4fb17bc32f21f1.html", "dir_821002d4f10779a80d4fb17bc32f21f1" ],
     [ "CommonTypes.h", "CommonTypes_8h_source.html", null ],
-    [ "TrafficPulseLibrary.h", "TrafficPulseLibrary_8h_source.html", null ]
+    [ "TrafficPulseLibrary.h", "TrafficPulseLibrary_8h_source.html", null ],
+    [ "Utils.h", "Utils_8h_source.html", null ]
 ];

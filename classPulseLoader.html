@@ -102,25 +102,26 @@ $(document).ready(function(){initNavTree('classPulseLoader.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 
-<p>Responsible for loading and parsing SUMO .net.xml files, creating intersections, traffic lights, and road connections in the <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a>.  
+<p>Loads and parses a SUMO .net.xml file, populating <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a> with intersections, traffic lights, etc. It notifies its subject (e.g. <a class="el" href="classTrafficSystem.html" title="Main system class for traffic pulse.">TrafficSystem</a>) about loading progress.  
  <a href="classPulseLoader.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="PulseLoader_8h_source.html">PulseLoader.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a499dc9d630e5f8ea202b24082e363c2b" id="r_a499dc9d630e5f8ea202b24082e363c2b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPulseLoader.html#a499dc9d630e5f8ea202b24082e363c2b">PulseLoader</a> (<a class="el" href="classPulseDataManager.html">PulseDataManager</a> &amp;data_manager, std::string netFilePath)</td></tr>
-<tr class="memdesc:a499dc9d630e5f8ea202b24082e363c2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classPulseLoader.html" title="Responsible for loading and parsing SUMO .net.xml files, creating intersections, traffic lights,...">PulseLoader</a> with reference to the data manager and path to net file.  <br /></td></tr>
-<tr class="separator:a499dc9d630e5f8ea202b24082e363c2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d74553d2147bd0f5cad40b7fe635d85" id="r_a8d74553d2147bd0f5cad40b7fe635d85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPulseLoader.html#a8d74553d2147bd0f5cad40b7fe635d85">loadNetworkData</a> () const</td></tr>
-<tr class="memdesc:a8d74553d2147bd0f5cad40b7fe635d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses the network file and populates the <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a> with intersections, traffic lights, and naive road connections.  <br /></td></tr>
+<tr class="memitem:a951411b66991133b904b8807ae723574" id="r_a951411b66991133b904b8807ae723574"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPulseLoader.html#a951411b66991133b904b8807ae723574">PulseLoader</a> (<a class="el" href="classPulseDataManager.html">PulseDataManager</a> &amp;data_manager, std::string net_file, <a class="el" href="classISubject.html">ISubject</a> &amp;subject)</td></tr>
+<tr class="memdesc:a951411b66991133b904b8807ae723574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classPulseLoader.html" title="Loads and parses a SUMO .net.xml file, populating PulseDataManager with intersections,...">PulseLoader</a> with a reference to <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a> and a path to the net file.  <br /></td></tr>
+<tr class="separator:a951411b66991133b904b8807ae723574"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d74553d2147bd0f5cad40b7fe635d85" id="r_a8d74553d2147bd0f5cad40b7fe635d85"><td class="memItemLeft" align="right" valign="top"><a id="a8d74553d2147bd0f5cad40b7fe635d85" name="a8d74553d2147bd0f5cad40b7fe635d85"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>loadNetworkData</b> () const</td></tr>
+<tr class="memdesc:a8d74553d2147bd0f5cad40b7fe635d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses the network file and populates <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a>. Notifies the subject about loading progress at each step. <br /></td></tr>
 <tr class="separator:a8d74553d2147bd0f5cad40b7fe635d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Responsible for loading and parsing SUMO .net.xml files, creating intersections, traffic lights, and road connections in the <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a>. </p>
+<div class="textblock"><p>Loads and parses a SUMO .net.xml file, populating <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a> with intersections, traffic lights, etc. It notifies its subject (e.g. <a class="el" href="classTrafficSystem.html" title="Main system class for traffic pulse.">TrafficSystem</a>) about loading progress. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a499dc9d630e5f8ea202b24082e363c2b" name="a499dc9d630e5f8ea202b24082e363c2b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a499dc9d630e5f8ea202b24082e363c2b">&#9670;&#160;</a></span>PulseLoader()</h2>
+<a id="a951411b66991133b904b8807ae723574" name="a951411b66991133b904b8807ae723574"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a951411b66991133b904b8807ae723574">&#9670;&#160;</a></span>PulseLoader()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -135,7 +136,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>netFilePath</em>&#160;</td>
+          <td class="paramname"><em>net_file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classISubject.html">ISubject</a> &amp;&#160;</td>
+          <td class="paramname"><em>subject</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -145,37 +152,12 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Constructs a <a class="el" href="classPulseLoader.html" title="Responsible for loading and parsing SUMO .net.xml files, creating intersections, traffic lights,...">PulseLoader</a> with reference to the data manager and path to net file. </p>
+<p>Constructs a <a class="el" href="classPulseLoader.html" title="Loads and parses a SUMO .net.xml file, populating PulseDataManager with intersections,...">PulseLoader</a> with a reference to <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a> and a path to the net file. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data_manager</td><td>Reference to the singleton or external <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a>. </td></tr>
-    <tr><td class="paramname">netFilePath</td><td>Path to the SUMO .net.xml file (uncompressed). </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8d74553d2147bd0f5cad40b7fe635d85" name="a8d74553d2147bd0f5cad40b7fe635d85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d74553d2147bd0f5cad40b7fe635d85">&#9670;&#160;</a></span>loadNetworkData()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PulseLoader::loadNetworkData </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Parses the network file and populates the <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a> with intersections, traffic lights, and naive road connections. </p>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">std::runtime_error</td><td>if parsing fails or required XML elements are missing. </td></tr>
+    <tr><td class="paramname">data_manager</td><td>Reference to the data manager. </td></tr>
+    <tr><td class="paramname">net_file</td><td>Path to the SUMO .net.xml. </td></tr>
+    <tr><td class="paramname">subject</td><td>An <a class="el" href="classISubject.html" title="Interface for a subject that can be observed.">ISubject</a> (e.g. <a class="el" href="classTrafficSystem.html" title="Main system class for traffic pulse.">TrafficSystem</a>) to notify about loading progress. </td></tr>
   </table>
   </dd>
 </dl>

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['sumointegration_0',['SumoIntegration',['../classSumoIntegration.html',1,'']]]
+  ['trafficlightdurations_0',['TrafficLightDurations',['../structTrafficLightDurations.html',1,'']]],
+  ['trafficsystem_1',['TrafficSystem',['../classTrafficSystem.html',1,'']]]
 ];

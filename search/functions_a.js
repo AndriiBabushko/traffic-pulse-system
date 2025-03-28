@@ -8,6 +8,6 @@ var searchData=
   ['startsimulation_5',['startSimulation',['../classSumoIntegration.html#aa34304b7050ab45b869aa3e9d29e2bca',1,'SumoIntegration']]],
   ['stepsimulation_6',['stepSimulation',['../classSumoIntegration.html#a6f5da9572148a22aaafa53e95d8846e2',1,'SumoIntegration']]],
   ['stopsimulation_7',['stopSimulation',['../classSumoIntegration.html#a329881a3a28a7550160c0bd838bb49c0',1,'SumoIntegration']]],
-  ['sumointegration_8',['SumoIntegration',['../classSumoIntegration.html#a5da11087edad852e48d97c62be1bfc69',1,'SumoIntegration']]],
+  ['sumointegration_8',['SumoIntegration',['../classSumoIntegration.html#a6a54b42a465fcc380006f1ac4daa4231',1,'SumoIntegration']]],
   ['syncfromsumo_9',['syncFromSumo',['../classPulseDataManager.html#ab435b03fd9582923463669859981ddcf',1,'PulseDataManager']]]
 ];

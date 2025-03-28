@@ -1,5 +1,5 @@
 var classPulseLoader =
 [
-    [ "PulseLoader", "classPulseLoader.html#a499dc9d630e5f8ea202b24082e363c2b", null ],
+    [ "PulseLoader", "classPulseLoader.html#a951411b66991133b904b8807ae723574", null ],
     [ "loadNetworkData", "classPulseLoader.html#a8d74553d2147bd0f5cad40b7fe635d85", null ]
 ];

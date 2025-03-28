@@ -1,6 +1,6 @@
 var classSumoIntegration =
 [
-    [ "SumoIntegration", "classSumoIntegration.html#a5da11087edad852e48d97c62be1bfc69", null ],
+    [ "SumoIntegration", "classSumoIntegration.html#a6a54b42a465fcc380006f1ac4daa4231", null ],
     [ "getAllTrafficLights", "classSumoIntegration.html#acc592faf84a664d19762f2365baefec7", null ],
     [ "getAllVehicles", "classSumoIntegration.html#ae6857c9e8388295a34239e820023d9a4", null ],
     [ "getTrafficLightState", "classSumoIntegration.html#a44b448a9e0123271539aaa1e63a9a839", null ],
