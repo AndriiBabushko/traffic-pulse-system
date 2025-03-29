@@ -28,6 +28,7 @@ var searchData=
   ['gettype_25',['getType',['../classPulseVehicle.html#a261f6134239b1a8c927ca2fa542b34d9',1,'PulseVehicle']]],
   ['getvehicle_26',['getVehicle',['../classPulseDataManager.html#a309d0e10dd1458f03422a77657e5fbc8',1,'PulseDataManager']]],
   ['getvehicleposition_27',['getVehiclePosition',['../classSumoIntegration.html#a3967b8bde67fe293afee0fddc9c152ac',1,'SumoIntegration']]],
-  ['green_28',['green',['../structTrafficLightDurations.html#ab271008706597ecb0157f3ab639392e5',1,'TrafficLightDurations']]],
-  ['greenwavecorridor_29',['GreenWaveCorridor',['../structGreenWaveCorridor.html',1,'']]]
+  ['getvehicletype_28',['getVehicleType',['../classSumoIntegration.html#a53d509a37e90fa50eba160487903b287',1,'SumoIntegration']]],
+  ['green_29',['green',['../structTrafficLightDurations.html#ab271008706597ecb0157f3ab639392e5',1,'TrafficLightDurations']]],
+  ['greenwavecorridor_30',['GreenWaveCorridor',['../structGreenWaveCorridor.html',1,'']]]
 ];

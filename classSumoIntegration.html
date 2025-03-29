@@ -146,6 +146,9 @@ virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>getTra
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>setTrafficLightState</b> (const std::string &amp;tl_id, const std::string &amp;state) const</td></tr>
 <tr class="memdesc:abda08cf5147d65b05c5394be745e2cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the state (e.g., "rGrG") of the specified traffic light. <br /></td></tr>
 <tr class="separator:abda08cf5147d65b05c5394be745e2cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53d509a37e90fa50eba160487903b287" id="r_a53d509a37e90fa50eba160487903b287"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSumoIntegration.html#a53d509a37e90fa50eba160487903b287">getVehicleType</a> (const std::string &amp;vehicle_id) const</td></tr>
+<tr class="memdesc:a53d509a37e90fa50eba160487903b287"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the "type" string of a vehicle from SUMO (e.g., "passenger", "truck", "emergency").  <br /></td></tr>
+<tr class="separator:a53d509a37e90fa50eba160487903b287"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -261,6 +264,47 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_running</b></td></t
 
 <p>Retrieves all vehicle IDs. </p>
 <dl class="section return"><dt>Returns</dt><dd>A vector of vehicle IDs. </dd></dl>
+
+</div>
+</div>
+<a id="a53d509a37e90fa50eba160487903b287" name="a53d509a37e90fa50eba160487903b287"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53d509a37e90fa50eba160487903b287">&#9670;&#160;</a></span>getVehicleType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string SumoIntegration::getVehicleType </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>vehicle_id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieves the "type" string of a vehicle from SUMO (e.g., "passenger", "truck", "emergency"). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vehicle_id</td><td>The ID of the vehicle in SUMO. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string describing the vehicle type. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classPulseException.html" title="Custom exception class for the Pulse library.">PulseException</a></td><td>if SUMO is not running or if there's an underlying SUMO error. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

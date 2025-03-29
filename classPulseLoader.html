@@ -112,9 +112,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a951411b66991133b904b8807ae723574" id="r_a951411b66991133b904b8807ae723574"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPulseLoader.html#a951411b66991133b904b8807ae723574">PulseLoader</a> (<a class="el" href="classPulseDataManager.html">PulseDataManager</a> &amp;data_manager, std::string net_file, <a class="el" href="classISubject.html">ISubject</a> &amp;subject)</td></tr>
 <tr class="memdesc:a951411b66991133b904b8807ae723574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classPulseLoader.html" title="Loads and parses a SUMO .net.xml file, populating PulseDataManager with intersections,...">PulseLoader</a> with a reference to <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a> and a path to the net file.  <br /></td></tr>
 <tr class="separator:a951411b66991133b904b8807ae723574"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d74553d2147bd0f5cad40b7fe635d85" id="r_a8d74553d2147bd0f5cad40b7fe635d85"><td class="memItemLeft" align="right" valign="top"><a id="a8d74553d2147bd0f5cad40b7fe635d85" name="a8d74553d2147bd0f5cad40b7fe635d85"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>loadNetworkData</b> () const</td></tr>
-<tr class="memdesc:a8d74553d2147bd0f5cad40b7fe635d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses the network file and populates <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a>. Notifies the subject about loading progress at each step. <br /></td></tr>
+<tr class="memitem:a8d74553d2147bd0f5cad40b7fe635d85" id="r_a8d74553d2147bd0f5cad40b7fe635d85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPulseLoader.html#a8d74553d2147bd0f5cad40b7fe635d85">loadNetworkData</a> () const</td></tr>
+<tr class="memdesc:a8d74553d2147bd0f5cad40b7fe635d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads network data from the specified .net.xml file into the <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a>. Notifies LOADING_START, LOADING_PROGRESS, LOADING_COMPLETE events during the process.  <br /></td></tr>
 <tr class="separator:a8d74553d2147bd0f5cad40b7fe635d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -158,6 +157,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>loadNetworkData</b> (
     <tr><td class="paramname">data_manager</td><td>Reference to the data manager. </td></tr>
     <tr><td class="paramname">net_file</td><td>Path to the SUMO .net.xml. </td></tr>
     <tr><td class="paramname">subject</td><td>An <a class="el" href="classISubject.html" title="Interface for a subject that can be observed.">ISubject</a> (e.g. <a class="el" href="classTrafficSystem.html" title="Main system class for traffic pulse.">TrafficSystem</a>) to notify about loading progress. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8d74553d2147bd0f5cad40b7fe635d85" name="a8d74553d2147bd0f5cad40b7fe635d85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d74553d2147bd0f5cad40b7fe635d85">&#9670;&#160;</a></span>loadNetworkData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PulseLoader::loadNetworkData </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads network data from the specified .net.xml file into the <a class="el" href="classPulseDataManager.html" title="Singleton manager that stores all traffic simulation entities (intersections, traffic lights,...">PulseDataManager</a>. Notifies LOADING_START, LOADING_PROGRESS, LOADING_COMPLETE events during the process. </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classPulseException.html" title="Custom exception class for the Pulse library.">PulseException</a></td><td>if the file is missing or invalid (e.g. parsing error). </td></tr>
   </table>
   </dd>
 </dl>

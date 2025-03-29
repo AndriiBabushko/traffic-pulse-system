@@ -5,6 +5,7 @@ var classSumoIntegration =
     [ "getAllVehicles", "classSumoIntegration.html#ae6857c9e8388295a34239e820023d9a4", null ],
     [ "getTrafficLightState", "classSumoIntegration.html#a44b448a9e0123271539aaa1e63a9a839", null ],
     [ "getVehiclePosition", "classSumoIntegration.html#a3967b8bde67fe293afee0fddc9c152ac", null ],
+    [ "getVehicleType", "classSumoIntegration.html#a53d509a37e90fa50eba160487903b287", null ],
     [ "isRunning", "classSumoIntegration.html#a68ff721190259cd96f25c563db3b7b4a", null ],
     [ "setTrafficLightState", "classSumoIntegration.html#abda08cf5147d65b05c5394be745e2cd1", null ],
     [ "startSimulation", "classSumoIntegration.html#aa34304b7050ab45b869aa3e9d29e2bca", null ],
