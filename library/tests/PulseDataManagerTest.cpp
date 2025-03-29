@@ -117,9 +117,12 @@ TEST_F(PulseDataManagerWithRealSumoTest, SyncFromRealSumo) {
     auto& manager = PulseDataManager::getInstance();
     ASSERT_TRUE(s_sumo->isRunning()) << "SUMO should be running for this test.";
 
-    manager.syncFromSumo(*s_sumo);
+    for (int i = 0; i < 20; ++i) {
+        s_sumo->stepSimulation();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    manager.syncFromSumo(*s_sumo);
 
     const auto intersections = manager.getAllIntersections();
     const auto trafficLights = manager.getAllTrafficLights();

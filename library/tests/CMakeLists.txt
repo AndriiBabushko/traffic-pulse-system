@@ -1,4 +1,4 @@
-add_executable(library_tests SumoIntegrationTest.cpp PulseDataManagerTest.cpp PulseTrafficAlgoTest.cpp TrafficSystemTest.cpp)
+add_executable(library_tests SumoIntegrationTest.cpp PulseDataManagerTest.cpp PulseTrafficAlgoTest.cpp TrafficSystemTest.cpp PulseLoaderTest.cpp)
 
 target_link_libraries(library_tests PRIVATE traffic_pulse_library gtest_main)
 

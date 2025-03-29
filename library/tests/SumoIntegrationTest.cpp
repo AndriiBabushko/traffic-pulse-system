@@ -3,116 +3,180 @@
 //
 
 #include <gtest/gtest.h>
+#include <thread>
+#include <chrono>
+#include <string>
+#include <vector>
 
 #include "core/SumoIntegration.h"
-
+#include "core/PulseException.h"
 #include "constants/SumoConfigPath.h"
 
-class SumoIntegrationTestSuite : public ::testing::Test
-{
+/**
+ * @brief Fixture that starts a real SUMO simulation once and stops it afterward.
+ *        All tests in this suite share that one instance.
+ */
+class SumoIntegrationFixture : public ::testing::Test {
 protected:
-    static SumoIntegration* sumo;
+    static SumoIntegration* s_sumo;
 
+    /**
+     * @brief Start SUMO once for all tests in this suite.
+     */
     static void SetUpTestSuite() {
-        std::cout << "Attempting to start SUMO" << std::endl;
         try {
-            sumo = new SumoIntegration(SUMO_CONFIG_PATH);
-            sumo->startSimulation();
-            std::cout << "startSimulation returned OK" << std::endl;
-        } catch(const std::exception& e) {
-            std::cout << "Exception in SetUpTestSuite: " << e.what() << std::endl;
+            s_sumo = new SumoIntegration(SUMO_CONFIG_PATH);
+            s_sumo->startSimulation();
+            std::cout << "SumoIntegrationFixture: SUMO started OK" << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "Exception in SetUpTestSuite: " << e.what() << std::endl;
         }
     }
 
-    static void TearDownTestSuite()
-    {
-        if (sumo->isRunning()) {
-            sumo->stopSimulation();
+    /**
+     * @brief Stop SUMO after the entire suite finishes.
+     */
+    static void TearDownTestSuite() {
+        if (s_sumo && s_sumo->isRunning()) {
+            s_sumo->stopSimulation();
+            std::cout << "SumoIntegrationFixture: SUMO stopped." << std::endl;
         }
-        delete sumo;
-        sumo = nullptr;
+        delete s_sumo;
+        s_sumo = nullptr;
     }
 };
 
-SumoIntegration* SumoIntegrationTestSuite::sumo = nullptr;
+SumoIntegration* SumoIntegrationFixture::s_sumo = nullptr;
 
-TEST_F(SumoIntegrationTestSuite, StartSimulation)
-{
-    EXPECT_TRUE(sumo->isRunning());
+/**
+ * @test StartAndStopSimulation
+ * Checks that SUMO is indeed running after start and not running after stop.
+ */
+TEST_F(SumoIntegrationFixture, StartAndStopSimulation) {
+    ASSERT_NE(s_sumo, nullptr) << "SUMO pointer is null, something went wrong in SetUpTestSuite.";
+    EXPECT_TRUE(s_sumo->isRunning()) << "Expected SUMO to be running after startSimulation.";
+
+    s_sumo->stopSimulation();
+    EXPECT_FALSE(s_sumo->isRunning()) << "Expected SUMO to no longer be running after stopSimulation.";
+
+    EXPECT_NO_THROW(s_sumo->startSimulation());
+    EXPECT_TRUE(s_sumo->isRunning()) << "Expected SUMO to be running again after re-starting.";
 }
 
-TEST_F(SumoIntegrationTestSuite, StepSimulation)
-{
-    EXPECT_NO_THROW(sumo->stepSimulation());
+/**
+ * @test StepSimulationAndTime
+ * Steps the simulation a few times, verifying no exceptions are thrown and
+ * that it doesn't exceed a certain time. Also checks we can call step multiple times.
+ */
+TEST_F(SumoIntegrationFixture, StepSimulationAndTime) {
+    ASSERT_NE(s_sumo, nullptr);
+    ASSERT_TRUE(s_sumo->isRunning()) << "SUMO is not running. Did startSimulation fail?";
+
+    constexpr int steps = 10;
+    const auto start = std::chrono::steady_clock::now();
+
+    for (int i = 0; i < steps; ++i) {
+        EXPECT_NO_THROW(s_sumo->stepSimulation());
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+
+    const auto end = std::chrono::steady_clock::now();
+    const auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    // Arbitrary threshold to see if stepping N times is too slow.
+    EXPECT_LT(elapsed_ms, 6000) << "Stepping the simulation took too long: " << elapsed_ms << " ms";
 }
 
-TEST_F(SumoIntegrationTestSuite, GetAllVehicles)
-{
-    EXPECT_NO_THROW({
-        auto vehicles = sumo->getAllVehicles();
-        EXPECT_TRUE(vehicles.empty() || !vehicles.empty());
-    });
-}
+/**
+ * @test VehiclesEventuallyAppear
+ * Some scenarios spawn vehicles after a certain sim time. We do repeat step calls
+ * up to N times or T seconds, then check if we have vehicles in the scenario.
+ * If your .sumocfg spawns no vehicles, you can skip or lower your expectation.
+ */
+TEST_F(SumoIntegrationFixture, VehiclesEventuallyAppear) {
+    ASSERT_NE(s_sumo, nullptr);
+    ASSERT_TRUE(s_sumo->isRunning());
 
-// TODO: test skips so maybe its because no vehicles exist in the scenario at certain step
-TEST_F(SumoIntegrationTestSuite, GetVehiclePosition)
-{
-    EXPECT_NO_THROW({
-        auto vehicles = sumo->getAllVehicles();
-        if (vehicles.empty()) {
-            GTEST_SKIP() << "No vehicles exist in the SUMO scenario. Skipping test.";
-        } else {
-            auto vehicle_id = vehicles.front();
-            auto position = sumo->getVehiclePosition(vehicle_id);
 
-            EXPECT_GE(position.first, 0.0);
-            EXPECT_GE(position.second, 0.0);
+    bool foundVehicle = false;
+    for (int i = 0; i < 20; ++i) {
+        s_sumo->stepSimulation();
+        if (const auto vehicles = s_sumo->getAllVehicles(); !vehicles.empty()) {
+            foundVehicle = true;
+            break;
         }
-    });
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+
+    EXPECT_TRUE(foundVehicle) << "No vehicles appeared after 20 steps, but scenario was expected to have some.";
+
+    if (foundVehicle) {
+        const auto vehicles = s_sumo->getAllVehicles();
+        const auto& v_id = vehicles.front();
+        EXPECT_NO_THROW({
+            auto pos = s_sumo->getVehiclePosition(v_id);
+
+            EXPECT_GE(pos.first, 0.0);
+            EXPECT_GE(pos.second, 0.0);
+        });
+    }
 }
 
-TEST_F(SumoIntegrationTestSuite, GetTrafficLightState)
-{
-    EXPECT_NO_THROW({
-        auto lights = sumo->getAllTrafficLights();
-        if (lights.empty()) {
-            GTEST_SKIP() << "No traffic lights exist in the SUMO scenario. Skipping test.";
-        } else {
-            auto tl_id = lights.front();
-            auto state = sumo->getTrafficLightState(tl_id);
+/**
+ * @test TrafficLightsCheck
+ * Verifies we can retrieve traffic lights, set them, and get them back.
+ * If no traffic lights exist, skip. If you know your scenario has them, you can fail instead.
+ */
+TEST_F(SumoIntegrationFixture, TrafficLightsCheck) {
+    ASSERT_NE(s_sumo, nullptr);
+    ASSERT_TRUE(s_sumo->isRunning());
 
-            EXPECT_FALSE(state.empty());
-        }
-    });
-}
-
-TEST_F(SumoIntegrationTestSuite, SetTrafficLightState)
-{
-    auto lights = sumo->getAllTrafficLights();
+    auto lights = s_sumo->getAllTrafficLights();
     if (lights.empty()) {
-        GTEST_SKIP() << "No traffic lights exist in the SUMO scenario. Skipping test.";
-    } else {
-        auto tl_id = lights.front();
+        GTEST_SKIP() << "No traffic lights in scenario, skipping traffic light test.";
+    }
 
-        auto current_state = sumo->getTrafficLightState(tl_id);
+    const auto& tl_id = lights.front();
+    EXPECT_NO_THROW({
+        auto state = s_sumo->getTrafficLightState(tl_id);
+        EXPECT_FALSE(state.empty()) << "Traffic light state is empty, unexpected.";
+    });
 
-        // Modify the state carefully, e.g. flipping 'r'->'g' or 'g'->'r'
-        std::string new_state = current_state;
-        for (char &c : new_state) {
+    // Attempt to flip r->g, g->r
+    {
+        std::string current_state = s_sumo->getTrafficLightState(tl_id);
+        std::string flipped = current_state;
+        for (char &c : flipped) {
             if (c == 'r') c = 'g';
             else if (c == 'g') c = 'r';
         }
 
-        EXPECT_NO_THROW({
-            sumo->setTrafficLightState(tl_id, new_state);
-        });
-
-        auto updated_state = sumo->getTrafficLightState(tl_id);
-        EXPECT_EQ(updated_state, new_state);
+        EXPECT_NO_THROW(s_sumo->setTrafficLightState(tl_id, flipped));
+        auto updated_state = s_sumo->getTrafficLightState(tl_id);
+        EXPECT_EQ(updated_state, flipped);
+        EXPECT_NO_THROW(s_sumo->setTrafficLightState(tl_id, current_state));
     }
 }
 
-TEST_F(SumoIntegrationTestSuite, StopSimulation)
-{
-    EXPECT_NO_THROW(sumo->stopSimulation());
+/**
+ * @test PerformanceTest
+ * Steps the simulation a large number of times and ensures it doesn't blow up
+ * in terms of time or memory usage.
+ */
+TEST_F(SumoIntegrationFixture, PerformanceTest) {
+    ASSERT_NE(s_sumo, nullptr);
+    ASSERT_TRUE(s_sumo->isRunning());
+
+    constexpr int largeSteps = 100;
+    const auto start = std::chrono::steady_clock::now();
+
+    for (int i = 0; i < largeSteps; ++i) {
+        s_sumo->stepSimulation();
+    }
+
+    const auto end = std::chrono::steady_clock::now();
+    const auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    EXPECT_LT(elapsed_ms, 8000) << "Performance test took too long for " << largeSteps
+                                << " steps: " << elapsed_ms << " ms";
 }
