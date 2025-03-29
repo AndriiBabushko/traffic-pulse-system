@@ -1,11 +1,10 @@
 //
 // Created by andrii on 2/11/25.
 //
+#pragma once
 
 #ifndef TRAFFICLIGHTSTATE_H
 #define TRAFFICLIGHTSTATE_H
-
-#pragma once
 
 /**
  * @brief Enum representing the state of the traffic light.

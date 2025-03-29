@@ -4,8 +4,10 @@
 
 #include "entities/PulseTrafficLight.h"
 
-PulseTrafficLight::PulseTrafficLight(const std::string& traffic_light_id, const TrafficLightDurations& durations)
-    : m_traffic_light_id(traffic_light_id), m_current_state(TrafficLightState::RED), m_durations(durations) {}
+#include <utility>
+
+PulseTrafficLight::PulseTrafficLight(std::string traffic_light_id, const TrafficLightDurations& durations)
+    : m_traffic_light_id(std::move(traffic_light_id)), m_current_state(TrafficLightState::RED), m_durations(durations) {}
 
 std::string PulseTrafficLight::getId() const
 {

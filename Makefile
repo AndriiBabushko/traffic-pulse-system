@@ -1,21 +1,29 @@
-BUILD_DIR = build
+BUILD_DIR   = build
+VERSION  ?= 1.0.0
 
-.PHONY: clean build test_library test_all
+.PHONY: clean build test_library test_root test_all
 
 clean:
-	rm -rf $(BUILD_DIR) $(LIBRARY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 
 build:
-	cmake -S . -B $(BUILD_DIR)
-	cmake --build $(BUILD_DIR)
+	@echo "Building the simulation, version $(VERSION)..."
+	cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DPROJECT_VERSION=$(VERSION)
+	cmake --build build
 
-test:
-	cmake -S . -B $(BUILD_DIR)
-	cmake --build $(BUILD_DIR)
-	cd $(BUILD_DIR)
-	ctest --output-on-failure
-	cd ..
+test_all:
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && cmake .. && make
+	cd $(BUILD_DIR) && ctest --output-on-failure
+
+test_root:
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && cmake .. && make
+	cd $(BUILD_DIR) && ctest -L root --output-on-failure
 
 test_library:
 	cd library
-	make test
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && cmake .. && make
+	cd $(BUILD_DIR) && ctest -L library --output-on-failure
+	cd ../..

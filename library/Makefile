@@ -43,11 +43,11 @@ publish: create
 	@echo "Library version $(VERSION) has been uploaded to '$(REMOTE) as $(USER)/$(CHANNEL)'!"
 
 test:
-	rm -rf $(LIBRARY_BUILD_DIR)
+	make clean
 	make build
-	cd $(LIBRARY_BUILD_DIR) && ctest --output-on-failure
+	cd $(LIBRARY_BUILD_DIR) && ctest -L library --output-on-failure
 	cd ..
 
 clean:
 	@echo "Removing the build directory..."
-	rm -rf build
+	rm -rf $(LIBRARY_BUILD_DIR)

@@ -4,8 +4,10 @@
 
 #include "entities/PulseVehicle.h"
 
-PulseVehicle::PulseVehicle(const std::string& vehicle_id, PulseVehicleType type, PulseVehicleRole role, const PulsePosition& position)
-    : m_vehicle_id(vehicle_id), m_type(type), m_role(role), m_position(position) {}
+#include <utility>
+
+PulseVehicle::PulseVehicle(std::string vehicle_id, const PulseVehicleType type, const PulseVehicleRole role, const PulsePosition& position)
+    : m_vehicle_id(std::move(vehicle_id)), m_type(type), m_role(role), m_position(position) {}
 
 std::string PulseVehicle::getId() const
 {

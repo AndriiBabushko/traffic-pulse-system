@@ -1,0 +1,68 @@
+default:
+  image: ubuntu:22.04
+  tags:
+    - docker
+  before_script:
+    - apt-get update
+    - apt-get install -y software-properties-common
+    - add-apt-repository -y ppa:sumo/stable
+    - apt-get update
+    - apt-get install -y cmake g++ git libpugixml-dev git-lfs sumo sumo-tools sumo-doc
+    - git lfs pull
+
+stages:
+  - test
+  - build
+  - deploy
+
+test_root:
+  stage: test
+  script:
+    - make test_root
+  only:
+    - main
+    - app
+
+test_library:
+  stage: test
+  script:
+    - make test_library
+  only:
+    - main
+    - library
+
+test_all:
+  stage: test
+  script:
+    - make test_all
+  only:
+    - main
+
+build-doxygen:
+  stage: build
+  before_script:
+    - apt-get update
+    - apt-get install -y doxygen graphviz
+  script:
+    - cd library
+    - doxygen Doxyfile
+  artifacts:
+    paths:
+      - library/html/
+    expire_in: 1 week
+  only:
+    - main
+    - library
+
+pages:
+  stage: deploy
+  script:
+    - mv library/html public
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 week
+  only:
+    - main
+    - library
+    - app

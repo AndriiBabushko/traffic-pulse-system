@@ -58,4 +58,6 @@ compile_commands.json
 cmake-build-*/
 build/
 CMakeUserPresets.json
+library/html
+builds/
 
